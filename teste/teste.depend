@@ -1,8 +1,0 @@
-# depslib dependency file v1.0
-1670200394 source:c:\users\sintr\onedrive - ipleiria\fp\projeto\teste\main.c
-	<stdio.h>
-	<stdlib.h>
-	"constantes.h"
-
-1670200409 c:\users\sintr\onedrive - ipleiria\fp\projeto\teste\constantes.h
-
