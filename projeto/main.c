@@ -1,6 +1,15 @@
+/*************************************************
+                    Projeto FP
+    Unidade Curricular: Fundamentos de Programação
+    Docente: Carmen Francisco
+    Elaborado por:
+    João Sintra, 2220865
+    Francisco Furtado, 2220870
+****************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <ctype.h>
 
 #include "constantes.h"
 #include "funcoes.h"
@@ -12,69 +21,64 @@ int main() {
     char escolhaMenuPrincipal, escolhaRegistar, escolhaConsultar, escolhaEstatistica, escolhaSaida;
 
     do {
-        printf("*********************** Menu ção Principal ***********************\n");
-        printf("[1] Registar\n");
-        printf("[2] Consultar\n");
-        printf("[3] Estatisticas\n");
-        printf("[0] Sair\n\n");
-        printf("Opcao -> ");
-        scanf(" %c", &escolhaMenuPrincipal);
-
+        system("cls");
+       escolhaMenuPrincipal = menu_principal();
         switch(escolhaMenuPrincipal) {
         case '1':
-            do {
-                printf("*********************** Menu Registar ***********************\n");
-                printf("[1] Registar os dados dos participantes\n");
-                printf("[2] Registar os dados das atividades\n");
-                printf("[3] Registar os dados das inscrições\n");
-                printf("[0] Voltar\n\n");
-                printf("Opcao -> ");
-                scanf(" %c", &escolhaRegistar);
+           do{
+                system("cls");
+             escolhaRegistar= menu_registar();
             switch(escolhaRegistar) {
-
                 case '1':
                     printf("Registar os dados dos participantes\n");
+                     fflush(stdin);
+                    getchar();
                     break;
                 case '2':
                     printf("Registar os dados das atividades\n");
+                     fflush(stdin);
+                    getchar();
                     break;
                 case '3':
                     printf("Registar os dados das inscrições\n");
+                     fflush(stdin);
+                    getchar();
                     break;
                 case '0':
 
                     break;
                 default:
-                    printf("Opcao invalida\n");
+                    printf("Opcao invalidaq\n");
                     break;
                 }
 
             } while(escolhaRegistar!='0');
-            break;
+           break;
         case '2':
             do {
-                printf("*********************** Menu Consultar ***********************\n");
-                printf("[1] Consultar os dados dos participantes\n");
-                printf("[2] Consultar os dados das atividades\n");
-                printf("[3] Consultar os dados das inscrições\n");
-                printf("[0] Voltar\n\n");
-                printf("Opcao -> ");
-                scanf(" %c", &escolhaConsultar);
+                system("cls");
+                escolhaConsultar = menu_consultar();
                 switch(escolhaConsultar) {
 
                 case '1':
                     printf("Consultar os dados dos participantes\n");
+                    fflush(stdin);
+                    getchar();
                     break;
                 case '2':
                     printf("Consultar os dados das atividades\n");
+                     fflush(stdin);
+                    getchar();
                     break;
                 case '3':
                     printf("Consultar os dados das inscrições\n");
+                     fflush(stdin);
+                    getchar();
                     break;
                 case '0':
                     break;
                 default:
-                    printf("Opcao invalida\n");
+                    printf("Opcao invalidaq\n");
                     break;
                 }
 
@@ -82,41 +86,41 @@ int main() {
             break;
         case '3':
             do {
-                printf("*********************** Menu Estatisticas ***********************\n \n");
-                printf("[1] Estatisticas do numero de atividades realizadas por cada associacao\n");
-                printf("[2] Estatisticas da percentagem de inscrições por escola\n");
-                printf("[3] Estatisticas do valor total das inscrições entre duas datas por tipo de atividade\n");
-                printf("[0] Voltar\n\n");
-                printf("Opcao -> ");
-                scanf(" %c", &escolhaEstatistica);
+                system("cls");
+                escolhaEstatistica = menu_estatisticas();
                 switch(escolhaEstatistica) {
 
                 case '1':
                     printf("Estatisticas do numero de atividades realizadas por cada associacao\n");
+                     fflush(stdin);
+                    getchar();
                     break;
                 case '2':
                     printf("Estatisticas da percentagem de inscrições por escola\n");
+                     fflush(stdin);
+                    getchar();
                     break;
                 case '3':
                     printf("Estatisticas do valor total das inscrições entre duas datas por tipo de atividade\n");
+                     fflush(stdin);
+                    getchar();
                     break;
                 case '0':
                     break;
                 default:
-                    printf("Opcao invalida\n");
+                    printf("Opcao invalidaq\n");
                     break;
                 }
 
             } while(escolhaEstatistica!='0');
-            break;
+
         case '0':
-            printf("Pretende sair? 'S'im ou 'N'ao: ");
-            scanf(" %c", &escolhaSaida );
-            escolhaSaida = toupper(escolhaSaida);
+        system("cls");
+            escolhaSaida= menu_saida();
             break;
 
         default:
-            printf("Opção invalida\n");
+            printf("Opção invalidaq\n");
             break;
         }
 
