@@ -3,6 +3,9 @@
 #include <locale.h>
 #include <ctype.h>
 
+#ifndef MENUS_H
+#define MENUS_H
+
 #include "constantes.h"
 #include "funcoes.h"
 
@@ -88,3 +91,4 @@ char menu_saida(void) {
             printf("Opcao invalida\n");
     } while (opcao != 'S' && opcao != 'N');
 }
+#endif

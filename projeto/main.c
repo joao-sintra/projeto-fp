@@ -19,7 +19,8 @@
 int main() {
     setlocale(LC_ALL,"Portuguese");
     char escolhaMenuPrincipal, escolhaRegistar, escolhaConsultar, escolhaEstatistica, escolhaSaida;
-
+    participante participantes[NUMERO_MAXIMO_ESTUDANTES];
+    preenche_participantes(participantes);
     do {
         system("cls");
        escolhaMenuPrincipal = menu_principal();
@@ -30,7 +31,8 @@ int main() {
              escolhaRegistar= menu_registar();
             switch(escolhaRegistar) {
                 case '1':
-                    printf("Registar os dados dos participantes\n");
+                   regista_participante(participantes);
+                   
                      fflush(stdin);
                     getchar();
                     break;
@@ -61,7 +63,8 @@ int main() {
                 switch(escolhaConsultar) {
 
                 case '1':
-                    printf("Consultar os dados dos participantes\n");
+                    //printf("Consultar os dados dos participantes\n");
+                    mostra_participante(participantes);
                     fflush(stdin);
                     getchar();
                     break;

@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <ctype.h>
+
+#include "constantes.h"
+#include "menus.h"
+
+typedef structparticipante{
+    int indetificador;
+    char nome[30];
+    char escola[7];
+    char nif[10];
+    char email[50];
+    char telefone[10];
+
+}participante;
+
+void regista_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES]);
+void mostra_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES]);
+
+void regista_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES]){
+    int contador = 1;
+    participantes[0].indetificador = contador;
+    printf("Introduza o nome do participante: ");
+    scanf("%s", &participantes[0].nome);
+    printf("Introduza a escola do participante: ");
+    scanf("%s", &participantes[0].escola);
+    printf("Introduza o nif do participante: ");
+    scanf("%s", &participantes[0].nif);
+    printf("Introduza o email do participante: ");
+    scanf("%s", &participantes[0].email);
+    printf("Introduza o telefone do participante: ");
+    scanf("%s", &participantes[0].telefone);
+
+}
+void mostra_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES]){
+
+    printf("%d, %s, %s, %s, %s, %s",participantes[0].indetificador,participantes[0].nome, participantes[0].escola, participantes[0].nif, participantes[0].email, participantes[0].telefone);
+
+
+
+}
+
+
