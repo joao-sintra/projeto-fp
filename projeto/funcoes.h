@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <ctype.h>
+#include <string.h>
 
 #ifndef FUNCOES_H
 #define FUNCOES_H
@@ -9,7 +10,7 @@
 #include "constantes.h"
 #include "menus.h"
 
-typedef struct{
+typedef struct {
     int indetificador;
     char nome[31];
     char escola[7];
@@ -19,56 +20,117 @@ typedef struct{
 
 }participante;
 
-void regista_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES]);
-void mostra_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES]);
+void regista_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES], int* posicao, int* quantidade_participantes_por_adicionar);
+void mostra_participante(int posicao);
 void preenche_participantes(participante participantes[NUMERO_MAXIMO_ESTUDANTES]);
+void guarda_participantes_ficheiro(participante participantes[NUMERO_MAXIMO_ESTUDANTES], int* quantidade_participantes_por_adicionar, int posicao);
+int obter_ultima_posicao(void);
 
-void regista_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES]){
-    FILE *fp;
-    fp = fopen("participantes.bin", "ab");
-    int contador = 1;
-    participantes[contador].indetificador = contador;
+void regista_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES], int* posicao, int* quantidade_participantes_por_adicionar) {
+    int pos_aux = *posicao;
+    printf("Posicao_aux do array: %d\n", pos_aux);
+    participantes[*posicao].indetificador = *posicao;
+
     printf("Introduza o nome do participante: ");
-    scanf("%s", &participantes[contador].nome);
+    scanf("%s", &participantes[*posicao].nome);
     printf("Introduza a escola do participante: ");
-    scanf("%s", &participantes[contador].escola);
+    scanf("%s", &participantes[*posicao].escola);
     printf("Introduza o nif do participante: ");
-    scanf("%s", &participantes[contador].nif);
+    scanf("%s", &participantes[*posicao].nif);
     printf("Introduza o email do participante: ");
-    scanf("%s", &participantes[contador].email);
+    scanf("%s", &participantes[*posicao].email);
     printf("Introduza o telefone do participante: ");
-    scanf("%s", &participantes[contador].telefone);
-    fwrite(participantes, sizeof(participante), NUMERO_MAXIMO_ESTUDANTES, fp);
-    contador++;
-    printf("contador: %d",contador);
-    fclose(fp);
-    
+    scanf("%s", &participantes[*posicao].telefone);
+
+    *posicao = pos_aux + 1;
+    *quantidade_participantes_por_adicionar += 1;
+    printf("Posicao do array: %d\n", *posicao);
+    printf("quantidade participantes por adicionar: %d\n", *quantidade_participantes_por_adicionar);
+
 }
-void mostra_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES]){
-    
-   
-    FILE *fp;
-     fp = fopen("participantes.bin", "rb");
-    int numero_estudantes=0;
-    while(fread(&participantes[numero_estudantes], sizeof(participante), NUMERO_MAXIMO_ESTUDANTES, fp)==1){
-         numero_estudantes++;
-      
+
+void guarda_participantes_ficheiro(participante participantes[NUMERO_MAXIMO_ESTUDANTES], int* quantidade_participantes_por_adicionar, int posicao) {
+    FILE* fp;
+    int aux_posicao;
+    fp = fopen("participantes.bin", "ab");
+    aux_posicao = posicao - *quantidade_participantes_por_adicionar;
+    if (*quantidade_participantes_por_adicionar > 0) {
+        for (int i = aux_posicao; i < posicao; i++) {
+           
+                fwrite(&participantes[i], sizeof(participante), 1, fp);
+
+        }
+        printf("Participantes guardados no ficheiro com sucesso.");
+        *quantidade_participantes_por_adicionar = 0;
+         
     }
-    printf("%d\n\n", numero_estudantes);
+    
+    else {
+        printf("Não existe participantes novos para guardar no ficheiro");
+    }
     fclose(fp);
-     printf("%d, %s, %s, %s, %s, %s",participantes[0].indetificador,participantes[0].nome, participantes[0].escola, participantes[0].nif, participantes[0].email, participantes[0].telefone);
-    for(int i=0;i<numero_estudantes;i++){
-       // printf("%d, %s, %s, %s, %s, %s\n",participantes[i].indetificador,participantes[i].nome, participantes[i].escola, participantes[i].nif, participantes[i].email, participantes[i].telefone);
-    }
-   
-    // printf("Valor lido: %s", participantes);
-    
 }
-void preenche_participantes(participante participantes[NUMERO_MAXIMO_ESTUDANTES]){
-     FILE *fp;
-     fp = fopen("participantes.bin", "rb");
-    fread(participantes, sizeof(participante), NUMERO_MAXIMO_ESTUDANTES, fp);
-    fclose(fp);
+
+void mostra_participante(int posicao) {
+
+
+    FILE* fp;
+    participante participantes[NUMERO_MAXIMO_ESTUDANTES];
+    fp = fopen("participantes.bin", "rb");
+    if (fp == NULL) {
+        printf("Impossível abrir ficheiro");
+    }
+    else {
+
+
+
+        //printf("%d, %s, %s, %s, %s, %s", participantes[3].indetificador, participantes[3].nome, participantes[3].escola, participantes[3].nif, participantes[3].email, participantes[3].telefone);
+        for (int i = 0;i < posicao;i++) {
+            //if (participantes[i].indetificador != 0)
+            fread(&participantes[i], sizeof(participante), 1, fp);
+            //if (participantes[i].indetificador != 0)
+            printf("%d - %d, %s, %s, %s, %s, %s\n", i, participantes[i].indetificador, participantes[i].nome, participantes[i].escola, participantes[i].nif, participantes[i].email, participantes[i].telefone);
+
+
+        }
+        fclose(fp);
+        // printf("Valor lido: %s", participantes);
+    }
+}
+void preenche_participantes(participante participantes[NUMERO_MAXIMO_ESTUDANTES]) {
+    FILE* fp;
+    fp = fopen("participantes.bin", "rb");
+    if (fp == NULL) {
+        printf("Impossível abrir ficheiro");
+    }
+    else {
+        for (int i = 0; i < NUMERO_MAXIMO_ESTUDANTES; i++) {
+            fread(&participantes[i], sizeof(participante[i]), 1, fp);
+        }
+        fclose(fp);
+    }
+
+}
+
+int obter_ultima_posicao(void) {
+    FILE* fp;
+    participante participantes, participantes_aux[NUMERO_MAXIMO_ESTUDANTES];
+
+    int ultima_pos = 0, contador = 0;
+    fp = fopen("participantes.bin", "rb");
+    if (fp == NULL) {
+        printf("Impossivel abrir ficheiro");
+        ultima_pos = 0;
+    }else {
+
+        while ((fread(&participantes, sizeof(participante), 1, fp) == 1))
+        {
+            printf("%d - %d, %s, %s, %s, %s, %s\n", ultima_pos, participantes.indetificador, participantes.nome, participantes.escola, participantes.nif, participantes.email, participantes.telefone);
+            ultima_pos++;
+        }
+        fclose(fp);
+    }
+    return ultima_pos;
 }
 
 #endif

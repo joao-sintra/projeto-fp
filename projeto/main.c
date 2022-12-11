@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <ctype.h>
+#include <string.h> 
 
 #include "constantes.h"
 #include "funcoes.h"
@@ -17,33 +18,45 @@
 
 
 int main() {
-    setlocale(LC_ALL,"Portuguese");
+    
     char escolhaMenuPrincipal, escolhaRegistar, escolhaConsultar, escolhaEstatistica, escolhaSaida;
-    participante participantes[NUMERO_MAXIMO_ESTUDANTES];
-    preenche_participantes(participantes);
+    int posicao = 0, quantidade_participantes_por_adicionar=0;
+
+    participante participantes[NUMERO_MAXIMO_ESTUDANTES], participantes_por_aducionar[NUMERO_MAXIMO_ESTUDANTES];
+   
+    posicao = obter_ultima_posicao();
+   // posicao = 4;
+   
+    
+
+
     do {
         system("cls");
-       escolhaMenuPrincipal = menu_principal();
-        switch(escolhaMenuPrincipal) {
+         preenche_participantes(participantes);
+        printf("Posicao: %d\n", posicao);
+        escolhaMenuPrincipal = menu_principal();
+
+        switch (escolhaMenuPrincipal) {
         case '1':
-           do{
+            do {
                 system("cls");
-             escolhaRegistar= menu_registar();
-            switch(escolhaRegistar) {
+                escolhaRegistar = menu_registar();
+                switch (escolhaRegistar) {
                 case '1':
-                   regista_participante(participantes);
-                   
-                     fflush(stdin);
+                    regista_participante(participantes, &posicao, &quantidade_participantes_por_adicionar);
+
+                    fflush(stdin);
                     getchar();
                     break;
                 case '2':
                     printf("Registar os dados das atividades\n");
-                     fflush(stdin);
+                    guarda_participantes_ficheiro(participantes, &quantidade_participantes_por_adicionar, posicao);
+                    fflush(stdin);
                     getchar();
                     break;
                 case '3':
                     printf("Registar os dados das inscrições\n");
-                     fflush(stdin);
+                    fflush(stdin);
                     getchar();
                     break;
                 case '0':
@@ -54,28 +67,28 @@ int main() {
                     break;
                 }
 
-            } while(escolhaRegistar!='0');
-           break;
+            } while (escolhaRegistar != '0');
+            break;
         case '2':
             do {
                 system("cls");
                 escolhaConsultar = menu_consultar();
-                switch(escolhaConsultar) {
+                switch (escolhaConsultar) {
 
                 case '1':
                     //printf("Consultar os dados dos participantes\n");
-                    mostra_participante(participantes);
+                    mostra_participante(posicao);
                     fflush(stdin);
                     getchar();
                     break;
                 case '2':
                     printf("Consultar os dados das atividades\n");
-                     fflush(stdin);
+                    fflush(stdin);
                     getchar();
                     break;
                 case '3':
                     printf("Consultar os dados das inscrições\n");
-                     fflush(stdin);
+                    fflush(stdin);
                     getchar();
                     break;
                 case '0':
@@ -85,27 +98,27 @@ int main() {
                     break;
                 }
 
-            } while(escolhaConsultar!='0');
+            } while (escolhaConsultar != '0');
             break;
         case '3':
             do {
                 system("cls");
                 escolhaEstatistica = menu_estatisticas();
-                switch(escolhaEstatistica) {
+                switch (escolhaEstatistica) {
 
                 case '1':
                     printf("Estatisticas do numero de atividades realizadas por cada associacao\n");
-                     fflush(stdin);
+                    fflush(stdin);
                     getchar();
                     break;
                 case '2':
                     printf("Estatisticas da percentagem de inscrições por escola\n");
-                     fflush(stdin);
+                    fflush(stdin);
                     getchar();
                     break;
                 case '3':
                     printf("Estatisticas do valor total das inscrições entre duas datas por tipo de atividade\n");
-                     fflush(stdin);
+                    fflush(stdin);
                     getchar();
                     break;
                 case '0':
@@ -115,11 +128,14 @@ int main() {
                     break;
                 }
 
-            } while(escolhaEstatistica!='0');
+            } while (escolhaEstatistica != '0');
 
         case '0':
-        system("cls");
-            escolhaSaida= menu_saida();
+            system("cls");
+            escolhaSaida = menu_saida();
+           /* if(escolhaSaida == 'S')
+                guarda_participantes_ficheiro(participantes);
+            */
             break;
 
         default:
@@ -127,7 +143,7 @@ int main() {
             break;
         }
 
-    } while(escolhaSaida!='S');
+    } while (escolhaSaida != 'S');
 
     return 0;
 }
