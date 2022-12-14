@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <ctype.h>
-#include <string.h> 
+#include <string.h>
 
 #include "constantes.h"
 #include "funcoes.h"
@@ -18,16 +18,16 @@
 
 
 int main() {
-    
+
     char escolhaMenuPrincipal, escolhaRegistar, escolhaConsultar, escolhaEstatistica, escolhaSaida;
     int posicao = 0, quantidade_participantes_por_adicionar=0;
 
-    participante participantes[NUMERO_MAXIMO_ESTUDANTES], participantes_por_aducionar[NUMERO_MAXIMO_ESTUDANTES];
-   
+    participante participantes[NUMERO_MAXIMO_ESTUDANTES];
+
     posicao = obter_ultima_posicao();
    // posicao = 4;
-   
-    
+
+
 
 
     do {
