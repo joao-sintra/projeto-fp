@@ -67,13 +67,17 @@ int obter_ultima_posicao_inscricoes(void);
 
 void regista_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES], int* posicao, int* quantidade_participantes_por_adicionar) {
     int pos_aux = *posicao;
+    char escolas[5][7] = { "ESTG","ESECS","ESSLEI", "ESAD", "ESTM" };
+    int numero_escola;
+
     printf("Posicao_aux do array: %d\n", pos_aux);
     participantes[*posicao].identificador = *posicao;
 
     printf("Introduza o nome do participante: ");
     scanf("%s", &participantes[*posicao].nome);
-    printf("Introduza a escola do participante: ");
-    scanf("%s", &participantes[*posicao].escola);
+    printf("Introduza a escola do participante\n1 - ESTG\n2 - ESECS\n3 - ESSLEI\n4 - ESAD\n5 - ESTM\n --> ");
+    scanf("%d", &numero_escola);
+    strcpy(participantes[*posicao].escola, escolas[numero_escola - 1]);
     printf("Introduza o nif do participante: ");
     scanf("%s", &participantes[*posicao].nif);
     printf("Introduza o email do participante: ");
@@ -83,8 +87,6 @@ void regista_participante(participante participantes[NUMERO_MAXIMO_ESTUDANTES], 
 
     *posicao = pos_aux + 1;
     *quantidade_participantes_por_adicionar += 1;
-    printf("Posicao do array: %d\n", *posicao);
-    printf("quantidade participantes por adicionar: %d\n", *quantidade_participantes_por_adicionar);
 }
 
 //---------- Função para Registar as Atividades -----------------//

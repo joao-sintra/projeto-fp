@@ -34,8 +34,8 @@ int main() {
     do {
         system("cls");
         preenche_participantes(participantes);
-        preenche_atividades(atividades);
-        preenche_inscricoes(inscricoes);
+      //  preenche_atividades(atividades);
+        //preenche_inscricoes(inscricoes);
         printf("Posicao Participantes: %d\n", posicaoParticipantes);
         printf("Posicao Atividades: %d\n", posicaoAtividades);
         printf("Posicao Inscrições: %d\n", posicaoInscricoes);
