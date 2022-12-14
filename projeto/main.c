@@ -28,13 +28,13 @@ int main() {
 
     posicaoParticipantes = obter_ultima_posicao_participantes();
     posicaoAtividades = obter_ultima_posicao_atividades();
-    posicaoInscricoes = obter_ultima_posicao_inscricoes();
+    //posicaoInscricoes = obter_ultima_posicao_inscricoes();
     // posicao = 4;
 
     do {
         system("cls");
         preenche_participantes(participantes);
-      //  preenche_atividades(atividades);
+      //preenche_atividades(atividades);
         //preenche_inscricoes(inscricoes);
         printf("Posicao Participantes: %d\n", posicaoParticipantes);
         printf("Posicao Atividades: %d\n", posicaoAtividades);
@@ -60,8 +60,8 @@ int main() {
                     getchar();
                     break;
                 case '3':
-                    //printf("Registar os dados das inscricoes\n");
-                    regista_inscricao(inscricoes, &posicaoInscricoes, &quantidade_inscricoes_por_adicionar);
+                    printf("Registar os dados das inscricoes\n");
+                    //regista_inscricao(inscricoes, &posicaoInscricoes, &quantidade_inscricoes_por_adicionar);
                     fflush(stdin);
                     getchar();
                     break;
@@ -94,8 +94,8 @@ int main() {
                     getchar();
                     break;
                 case '3':
-                    //printf("Consultar os dados das inscricoes\n");
-                    mostra_inscricao(posicaoInscricoes);
+                    printf("Consultar os dados das inscricoes\n");
+                    //mostra_inscricao(posicaoInscricoes);
                     fflush(stdin);
                     getchar();
                     break;
@@ -152,7 +152,7 @@ int main() {
 
     guarda_participantes_ficheiro(participantes, &quantidade_participantes_por_adicionar, posicaoParticipantes);
     guarda_atividades_ficheiro(atividades, &quantidade_atividades_por_adicionar, posicaoAtividades);
-    guarda_inscricoes_ficheiro(inscricoes, &quantidade_inscricoes_por_adicionar, posicaoInscricoes);
+    //guarda_inscricoes_ficheiro(inscricoes, &quantidade_inscricoes_por_adicionar, posicaoInscricoes);
 
     return 0;
 }

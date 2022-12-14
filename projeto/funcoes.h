@@ -183,7 +183,7 @@ void guarda_atividades_ficheiro(atividade atividades[NUMERO_MAXIMO_ATIVIDADES], 
 //---------------------------//---------------------------//
 
 //---------- Função para Guardar as Inscrições no ficheiro -----------------//
-void guarda_inscricoes_ficheiro(inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES], int* quantidade_inscricoes_por_adicionar, int posicao) {
+/*void guarda_inscricoes_ficheiro(inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES], int* quantidade_inscricoes_por_adicionar, int posicao) {
     FILE* fp;
     int aux_posicao;
     fp = fopen("inscricoes.bin", "ab");
@@ -198,7 +198,7 @@ void guarda_inscricoes_ficheiro(inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES], 
         printf("Nao existem inscricoes novas para guardar no ficheiro!");
     }
     fclose(fp);
-}
+}*/
 //---------------------------//---------------------------//
 
 void mostra_participante(int posicao) {
@@ -250,7 +250,7 @@ void mostra_atividade(int posicao) {
 //---------------------------//---------------------------//
 
 //---------- Função para Mostra as Inscrições que já foram guardadas (Consultar incrições) -----------------//
-void mostra_inscricao(int posicao) {
+/*void mostra_inscricao(int posicao) {
     FILE* fp;
     inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES];
     fp = fopen("inscricoes.bin", "rb");
@@ -268,7 +268,7 @@ void mostra_inscricao(int posicao) {
         fclose(fp);
         // printf("Valor lido: %s", participantes);
     }
-}
+}*/
 //---------------------------//---------------------------//
 
 void preenche_participantes(participante participantes[NUMERO_MAXIMO_ESTUDANTES]) {
@@ -300,7 +300,7 @@ void preenche_atividades(atividade atividades[NUMERO_MAXIMO_ATIVIDADES]) {
 //---------------------------//---------------------------//
 
 //---------- Função que coloca os dados das Inscrições no ficheiro de "inscricoes.bin" -----------------//
-void preenche_inscricoes(inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES]) {
+/*void preenche_inscricoes(inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES]) {
     FILE* fp;
     fp = fopen("inscricoes.bin", "rb");
     if (fp == NULL) {
@@ -311,7 +311,7 @@ void preenche_inscricoes(inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES]) {
         }
         fclose(fp);
     }
-}
+}*/
 //---------------------------//---------------------------//
 
 int obter_ultima_posicao_participantes(void) {
@@ -357,7 +357,7 @@ int obter_ultima_posicao_atividades(void) {
 //---------------------------//---------------------------//
 
 //---------- Função que dá a última inscrição adicionada no ficheiro "inscricoes.bin" -----------------//
-int obter_ultima_posicao_inscricoes(void) {
+/*int obter_ultima_posicao_inscricoes(void) {
     FILE* fp;
     inscricao inscricoes, inscricoes_aux[NUMERO_MAXIMO_INSCRICOES];
 
@@ -375,7 +375,7 @@ int obter_ultima_posicao_inscricoes(void) {
         fclose(fp);
     }
     return ultima_pos;
-}
+}*/
 //---------------------------//---------------------------//
 
 #endif
