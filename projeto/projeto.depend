@@ -1,13 +1,10 @@
 # depslib dependency file v1.0
-1670703401 source:c:\users\sintr\onedrive - ipleiria\fp\projeto\projeto\main.c
+1672791019 source:c:\users\sintr\onedrive - ipleiria\fp\projeto\projeto\main.c
 	<stdio.h>
 	<stdlib.h>
 	<locale.h>
 	<ctype.h>
 	<string.h>
-	"constantes.h"
-	"funcoes.h"
-	"menus.h"
 
 1670548838 c:\users\sintr\onedrive - ipleiria\fp\projeto\projeto\constantes.h
 
