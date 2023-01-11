@@ -1,12 +1,14 @@
 /*************************************************
                     Projeto FP
-    Unidade Curricular: Fundamentos de Programacao
+    Unidade Curricular: Fundamentos de Programação
     Docente: Carmen Francisco
     Elaborado por:
-    Joao Sintra, 2220865
+    João Sintra, 2220865
     Francisco Furtado, 2220870
     Grupo 7 - PL2
 ****************************************************/
+
+//Bibliotecas
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
@@ -14,10 +16,11 @@
 #include <string.h>
 #include <locale.h>
 
-//Constantes do numero maximo de estudantes, atividades e incrices
+//Constantes do número máximo de estudantes, atividades e incrições
 #define NUMERO_MAXIMO_ESTUDANTES 5000
 #define NUMERO_MAXIMO_ATIVIDADES 200
 #define NUMERO_MAXIMO_INSCRICOES 10000
+
 //Constantes dos nomes dos ficheiros
 #define FICHEIRO_PARTICIPANTES "participantes.bin"
 #define FICHEIRO_ATIVIDADES "atividades.bin"
@@ -28,7 +31,7 @@
 #define TAMANHO_EMAIL 30
 #define TAMANHO_LOCAL 20
 
-//---------- typedef struct do Registo dos participantes -----------------//
+//---------- typedef struct do Registo dos Participantes -----------------//
 typedef struct {
     int identificador;
     char nome[TAMANHO_NOME + 1];
@@ -37,6 +40,7 @@ typedef struct {
     char email[TAMANHO_EMAIL + 1];
     char telefone[10];
 } t_participante;
+//---------------------------//---------------------------//
 
 //---------- typedef struct do Registo das Atividades -----------------//
 typedef struct {
@@ -51,7 +55,7 @@ typedef struct {
 } t_atividade;
 //---------------------------//---------------------------//
 
-//---------- typedef struct do Registo das Inscrcoes -----------------//
+//---------- typedef struct do Registo das Inscrições -----------------//
 typedef struct {
     int identificador;
     int identificadorParticipante;
@@ -61,41 +65,55 @@ typedef struct {
     char hora[9];
 } t_inscricao;
 //---------------------------//---------------------------//
-//---------- Prototipos das funcoes para os menus -----------------//
+
+//---------- Protótipos das funções para os menus -----------------//
 char menu_principal(void);
 char menu_registar(void);
 char menu_consultar(void);
 char menu_estatisticas(void);
 char menu_saida(void);
-
 //---------------------------//---------------------------//
-//----------Prototipos das funcoes para Registar os Participantes e Consultar -----------------//
 
+//----------Protótipos das funções para Registar os Participantes e Consultar -----------------//
 void regista_participante(t_participante participantes[], int* posicao, int* quantidade_participantes_por_adicionar);
 char* devolve_escola();
 void mostra_participante(int posicao);
-void preenche_participantes(t_participante participantes[]);
+void preenche_participantes(t_participante participantes[], int posicao);
 void guarda_participantes_ficheiro(t_participante participantes[], int* quantidade_participantes_por_adicionar, int posicao);
 int obter_ultima_posicao_participantes(void);
+//---------------------------//---------------------------//
 
-//----------Prototipos das funcoes para Registar as Atividades e Consultar -----------------//
+//----------Protótipos das funções para Registar as Atividades e Consultar -----------------//
 void regista_atividade(t_atividade atividades[], int* posicao, int* quantidade_atividades_por_adicionar);
 char* devolve_associacao();
 char* devolve_tipo_atividade();
 void mostra_atividade(int posicao);
-void preenche_atividades(t_atividade atividades[]);
+void preenche_atividades(t_atividade atividades[], int posicao);
 void guarda_atividades_ficheiro(t_atividade atividades[], int* quantidade_atividades_por_adicionar, int posicao);
 int obter_ultima_posicao_atividades(void);
+//---------------------------//---------------------------//
 
-//---------- Prototipos das funcoes para Registar as Incricoes e Consultar -----------------//
+//---------- Protótipos das funções para Registar as Incrições e Consultar -----------------//
 void regista_inscricao(t_inscricao inscricoes[], int* posicao, int posicao_participantes, int posicao_atividade, int* quantidade_inscricoes_por_adicionar);
 void mostra_inscricao(int posicao);
-void preenche_inscricoes(t_inscricao inscricoes[]);
+void preenche_inscricoes(t_inscricao inscricoes[], int posicao);
 void guarda_inscricoes_ficheiro(t_inscricao inscricoes[], int* quantidade_inscricoes_por_adicionar, int posicao);
 int obter_ultima_posicao_inscricoes(void);
 //---------------------------//---------------------------//
-//---------- Prototipos das funcoes para a leitura de dados e validacoes de dados -----------------//
-//int le_numero_intrevalo(int min, int max)
+
+//---------- Protótipo da função para Mostrar o número de Atividades realizadas por associação -----------------//
+void numero_atividades_realizadas_por_associacao(t_atividade atividades[]);
+//---------------------------//---------------------------//
+
+//---------- Protótipo da função para Mostrar a percentagem de Inscrições por escola -----------------//
+void percentagem_inscricoes_por_escola(t_inscricao inscricoes[], t_participante participantes[]);
+//---------------------------//---------------------------//
+
+//---------- Protótipos das funções para validar as datas inseridas pelo utilizador e Mostrar o valor total das inscrções entre duas datas por tipo de atividade -----------------//
+void valida_data_maior(void);
+//---------------------------//---------------------------//
+
+//---------- Protótipos das funções para a leitura de dados e validações de dados -----------------//
 char* le_nome(void);
 int le_numero_intrevalo(int min, int max);
 char* le_nome_atividade(void);
@@ -111,7 +129,7 @@ char* le_data(void);
 char* le_local(void);
 float le_valor_inscricao(void);
 int valida_formato_data_hora(int check);
-
+//---------------------------//---------------------------//
 
 int main() {
     setlocale(LC_ALL, "Portuguese");
@@ -128,10 +146,10 @@ int main() {
     // posicao = 4;
 
     do {
-        // system("cls");
-        preenche_participantes(participantes);
-        preenche_atividades(atividades);
-        preenche_inscricoes(inscricoes);
+        system("cls");
+        preenche_participantes(participantes,posicao_participantes);
+        preenche_atividades(atividades, posicao_atividades);
+        preenche_inscricoes(inscricoes,posicao_inscricoes);
         printf("Posicao Participantes: %d\n", posicao_participantes);
         printf("Posicao Atividades: %d\n", posicao_atividades);
         printf("Posicao Inscricoes: %d\n", posicao_inscricoes);
@@ -216,17 +234,20 @@ int main() {
                 switch (escolha_estatistica) {
 
                 case '1':
-                    printf("Estatisticas do numero de atividades realizadas por cada associacao\n");
+                    printf("Estatisticas do numero de atividades realizadas por cada associacao: \n");
+                    numero_atividades_realizadas_por_associacao(atividades);
                     fflush(stdin);
                     getchar();
                     break;
                 case '2':
                     printf("Estatisticas da percentagem de inscricoes por escola\n");
+                    percentagem_inscricoes_por_escola(inscricoes, participantes);
                     fflush(stdin);
                     getchar();
                     break;
                 case '3':
                     printf("Estatisticas do valor total das inscricoes entre duas datas por tipo de atividade\n");
+                    valida_data_maior();
                     fflush(stdin);
                     getchar();
                     break;
@@ -260,6 +281,7 @@ int main() {
     return 0;
 }
 
+//---------- Função do Menu principal -----------------//
 char menu_principal(void) {
     char opcao;
     do {
@@ -275,7 +297,9 @@ char menu_principal(void) {
     } while (opcao != '1' && opcao != '2' && opcao != '3' && opcao != '0');
     return opcao;
 }
-//Funcao do Menu dos registos
+//---------------------------//---------------------------//
+
+//---------- Função do Menu dos registos -----------------//
 char menu_registar(void) {
     char opcao;
     do {
@@ -292,7 +316,9 @@ char menu_registar(void) {
     } while (opcao != '1' && opcao != '2' && opcao != '3' && opcao != '0' && opcao != '4');
     return opcao;
 }
-//Funcao do Menu das consultas
+//---------------------------//---------------------------//
+
+//---------- Função do Menu das consultas -----------------//
 char menu_consultar(void) {
     char opcao;
     do {
@@ -308,7 +334,9 @@ char menu_consultar(void) {
     } while (opcao != '1' && opcao != '2' && opcao != '3' && opcao != '0');
     return opcao;
 }
-//Funcao do Menu das estatisticas
+//---------------------------//---------------------------//
+
+//---------- Função do Menu das estatísticas -----------------//
 char menu_estatisticas(void) {
     char opcao;
     do {
@@ -324,7 +352,9 @@ char menu_estatisticas(void) {
     } while (opcao != '1' && opcao != '2' && opcao != '3' && opcao != '0');
     return opcao;
 }
-//Funcao do Menu de saida
+//---------------------------//---------------------------//
+
+//---------- Função do Menu de saída -----------------//
 char menu_saida(void) {
     char opcao;
     do {
@@ -336,7 +366,9 @@ char menu_saida(void) {
             printf("Opcao invalida\n");
     } while (opcao != 'S' && opcao != 'N');
 }
+//---------------------------//---------------------------//
 
+//---------- Função para Registar os Participantes -----------------//
 void regista_participante(t_participante participantes[], int* posicao, int* quantidade_participantes_por_adicionar) {
     int pos_aux = *posicao, numero_escola;
     char escolas[5][7] = { "ESTG","ESECS","ESSLEI", "ESAD", "ESTM" };
@@ -352,7 +384,9 @@ void regista_participante(t_participante participantes[], int* posicao, int* qua
     *posicao = pos_aux + 1;
     *quantidade_participantes_por_adicionar += 1;
 }
-//Funcao para devolver a escola
+//---------------------------//---------------------------//
+
+//---------- Função para devolver a escola -----------------//
 char* devolve_escola() {
     char escolas[5][7] = { "ESTG","ESECS","ESSLEI", "ESAD", "ESTM" };
     static char escola_escolhida[7];
@@ -367,7 +401,9 @@ char* devolve_escola() {
     } while (numero_escola < 0 || numero_escola>5);
     return escola_escolhida;
 }
-//Funcao para devolver a associacao
+//---------------------------//---------------------------//
+
+//---------- Função para devolver a associação -----------------//
 char* devolve_associacao() {
     char associacao[5][10] = { "AE-ESTG","AE-ESECS","AE-ESSLEI", "AE-ESAD", "AE-ESTM" };
     static char associacao_escolhida[7];
@@ -382,7 +418,9 @@ char* devolve_associacao() {
     } while (numero_associacao < 0 && numero_associacao>5);
     return associacao_escolhida;
 }
-//Funcao para devolver o tipo da atividade
+//---------------------------//---------------------------//
+
+//---------- Função para devolver o tipo da atividade -----------------//
 char* devolve_tipo_atividade() {
     char tipo_atividade[6][11] = { "Academica", "Lazer","Cultura","Desporto","Formacao","Outra" };
     static char tipo_atividade_escolhida[7];
@@ -397,7 +435,9 @@ char* devolve_tipo_atividade() {
     } while (numero_tipo_atividade < 0 && numero_tipo_atividade>6);
     return tipo_atividade_escolhida;
 }
-//---------- Funcao para Registar as Atividades -----------------//
+//---------------------------//---------------------------//
+
+//---------- Função para Registar as Atividades -----------------//
 void regista_atividade(t_atividade atividades[], int* posicao, int* quantidade_atividades_por_adicionar) {
     int pos_aux = *posicao;
 
@@ -418,7 +458,7 @@ void regista_atividade(t_atividade atividades[], int* posicao, int* quantidade_a
 }
 //---------------------------//---------------------------//
 
-//---------- Funcao para Registar as Inscricoes -----------------//
+//---------- Função para Registar as Inscrições -----------------//
 void regista_inscricao(t_inscricao inscricoes[], int* posicao, int posicao_participantes, int posicao_atividade, int* quantidade_inscricoes_por_adicionar) {
     int pos_aux = *posicao;
     //printf("Posicao_aux do array: %d\n\n", pos_aux);
@@ -434,7 +474,7 @@ void regista_inscricao(t_inscricao inscricoes[], int* posicao, int posicao_parti
     strcpy(inscricoes[*posicao].hora, le_horas_inscricao());
     //-----------------------------------------------------------------------------
     //VALIDAR CASO NÃO EXISTA PARTICIPANRES OU ATIVIDADES NAO DAR PARA FAZER NADA
-    //-----------------------------------------------------------------------------    
+    //-----------------------------------------------------------------------------
     *posicao = pos_aux + 1;
     *quantidade_inscricoes_por_adicionar += 1;
     //printf("Posicao do array: %d\n", *posicao);
@@ -442,6 +482,7 @@ void regista_inscricao(t_inscricao inscricoes[], int* posicao, int posicao_parti
 }
 //---------------------------//---------------------------//
 
+//---------- Função para Guardar os Participantes no ficheiro -----------------//
 void guarda_participantes_ficheiro(t_participante participantes[], int* quantidade_participantes_por_adicionar, int posicao) {
     FILE* fp;
     int aux_posicao;
@@ -453,14 +494,14 @@ void guarda_participantes_ficheiro(t_participante participantes[], int* quantida
         }
         printf("Participantes guardados no ficheiro com sucesso.\n");
         *quantidade_participantes_por_adicionar = 0;
-    }
-    else {
+    } else {
         printf("Nao existem participantes novos para guardar no ficheiro\n");
     }
     fclose(fp);
 }
+//---------------------------//---------------------------//
 
-//---------- Funcao para Guardar as Atividades no ficheiro -----------------//
+//---------- Função para Guardar as Atividades no ficheiro -----------------//
 void guarda_atividades_ficheiro(t_atividade atividades[], int* quantidade_atividades_por_adicionar, int posicao) {
     FILE* fp;
     int aux_posicao;
@@ -472,15 +513,14 @@ void guarda_atividades_ficheiro(t_atividade atividades[], int* quantidade_ativid
         }
         printf("Atividades guardadas no ficheiro com sucesso.\n");
         *quantidade_atividades_por_adicionar = 0;
-    }
-    else {
+    } else {
         printf("Nao existem atividades novas para guardar no ficheiro!\n");
     }
     fclose(fp);
 }
 //---------------------------//---------------------------//
 
-//---------- Funcao para Guardar as Inscricoes no ficheiro -----------------//
+//---------- Função para Guardar as Inscricoes no ficheiro -----------------//
 void guarda_inscricoes_ficheiro(t_inscricao inscricoes[], int* quantidade_inscricoes_por_adicionar, int posicao) {
     FILE* fp;
     int aux_posicao;
@@ -492,14 +532,14 @@ void guarda_inscricoes_ficheiro(t_inscricao inscricoes[], int* quantidade_inscri
         }
         printf("Inscricoes guardadas no ficheiro com sucesso.\n");
         *quantidade_inscricoes_por_adicionar = 0;
-    }
-    else {
+    } else {
         printf("Nao existem inscricoes novas para guardar no ficheiro!\n");
     }
     fclose(fp);
 }
 //---------------------------//---------------------------//
 
+//---------- Função para Mostrar os Particpantes que já foram guardados (Consultar participantes) -----------------//
 void mostra_participante(int posicao) {
     FILE* fp;
     t_participante participantes[NUMERO_MAXIMO_ESTUDANTES];
@@ -508,26 +548,24 @@ void mostra_participante(int posicao) {
     fp = fopen(FICHEIRO_PARTICIPANTES, "rb");
     if (fp == NULL) {
         printf("Nenhum registo de participantes");
-    }
-    else {
+    } else {
         //paginas=posicao/10;
         //paginas_restantes = posicao%10;
         //printf("\nQuatidade de paginas: %d\nIntoduza a pagina desejada: ",paginas);
-       // scanf("%d", &pagina_escolhida);
+        // scanf("%d", &pagina_escolhida);
         printf("\nQuantidade de registos: %d\n%-6s | %-30s | %-7s | %-9s | %-30s | %-9s\n------ | ------------------------------ | ------- | --------- | ------------------------------ | ---------\n", posicao, nomes_campos[0], nomes_campos[1], nomes_campos[2], nomes_campos[3], nomes_campos[4], nomes_campos[5]);
         for (int i = 0; i < posicao; i++) {
             fread(&participantes[i], sizeof(t_participante), 1, fp);
             //}
-             //for (int i = 10*(pagina_escolhida-1); i < 10*pagina_escolhida; i++) {
-
+            //for (int i = 10*(pagina_escolhida-1); i < 10*pagina_escolhida; i++) {
             printf("%-6d | %-30s | %-7s | %-9s | %-30s | %-9s\n", participantes[i].identificador, participantes[i].nome, participantes[i].escola, participantes[i].nif, participantes[i].email, participantes[i].telefone);
         }
-
         fclose(fp);
     }
 }
+//---------------------------//---------------------------//
 
-//---------- Funcao para Mostra as Atividades que ja foram guardadas (Consultar atividades) -----------------//
+//---------- Função para Mostrar as Atividades que já foram guardadas (Consultar atividades) -----------------//
 void mostra_atividade(int posicao) {
     FILE* fp;
     t_atividade atividades[NUMERO_MAXIMO_ATIVIDADES];
@@ -536,8 +574,7 @@ void mostra_atividade(int posicao) {
     fp = fopen(FICHEIRO_ATIVIDADES, "rb");
     if (fp == NULL) {
         printf("Nenhum registo de atividades");
-    }
-    else {
+    } else {
         printf("\nQuantidade de registos: %d\n%-4s | %-30s | %-10s | %-5s | %-20s | %-10s | %-10s | %-7s\n", posicao, nomes_campos[0], nomes_campos[1], nomes_campos[2], nomes_campos[3], nomes_campos[4], nomes_campos[5], nomes_campos[6], nomes_campos[7]);
         for (int i = 0; i < posicao; i++) {
             fread(&atividades[i], sizeof(t_atividade), 1, fp);
@@ -548,15 +585,14 @@ void mostra_atividade(int posicao) {
 }
 //---------------------------//---------------------------//
 
-//---------- Funcao para Mostra as inscricoes que ja foram guardadas (Consultar inscricoes) -----------------//
+//---------- Função para Mostrar as Inscrições que já foram guardadas (Consultar inscricoes) -----------------//
 void mostra_inscricao(int posicao) {
     FILE* fp;
     t_inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES];
     fp = fopen(FICHEIRO_INSCRICOES, "rb");
     if (fp == NULL) {
         printf("Nenhum registo de inscricoes");
-    }
-    else {
+    } else {
         for (int i = 0; i < posicao; i++) {
             fread(&inscricoes[i], sizeof(t_inscricao), 1, fp);
             printf("%d, %d, %d, %.2f, %s, %s\n", inscricoes[i].identificador, inscricoes[i].identificadorParticipante, inscricoes[i].identificadorAtividade, inscricoes[i].valorPago, inscricoes[i].data, inscricoes[i].hora);
@@ -566,53 +602,52 @@ void mostra_inscricao(int posicao) {
 }
 //---------------------------//---------------------------//
 
-void preenche_participantes(t_participante participantes[]) {
+//---------- Função que coloca os dados dos Participantes no ficheiro de "particpantes.bin" -----------------//
+void preenche_participantes(t_participante participantes[], int posicao) {
     FILE* fp;
     fp = fopen(FICHEIRO_PARTICIPANTES, "rb");
     if (fp == NULL) {
         printf("Impossivel abrir ficheiro");
-    }
-    else {
-        for (int i = 0; i < NUMERO_MAXIMO_ESTUDANTES; i++) {
-            fread(&participantes[i], sizeof(t_participante[i]), 1, fp);
+    } else {
+        for (int i = 0; i < posicao; i++) {
+            fread(&participantes[i], sizeof(t_participante), 1, fp);
         }
         fclose(fp);
     }
 }
+//---------------------------//---------------------------//
 
-//---------- Funcao que coloca os dados das Atividades no ficheiro de "atividades.bin" -----------------//
-void preenche_atividades(t_atividade atividades[]) {
+//---------- Função que coloca os dados das Atividades no ficheiro de "atividades.bin" -----------------//
+void preenche_atividades(t_atividade atividades[], int posicao) {
     FILE* fp;
     fp = fopen(FICHEIRO_ATIVIDADES, "rb");
     if (fp == NULL) {
         printf("Impossivel abrir ficheiro");
-    }
-    else {
-        for (int i = 0; i < NUMERO_MAXIMO_ATIVIDADES; i++) {
-            fread(&atividades[i], sizeof(t_atividade[i]), 1, fp);
+    } else {
+        for (int i = 0; i < posicao; i++) {
+            fread(&atividades[i], sizeof(t_atividade), 1, fp);
         }
         fclose(fp);
     }
 }
 //---------------------------//---------------------------//
 
-//---------- Funcao que coloca os dados das inscricoes no ficheiro de "inscricoes.bin" -----------------//
-void preenche_inscricoes(t_inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES]) {
+//---------- Função que coloca os dados das Inscrições no ficheiro de "inscricoes.bin" -----------------//
+void preenche_inscricoes(t_inscricao inscricoes[], int posicao) {
     FILE* fp;
     fp = fopen(FICHEIRO_INSCRICOES, "rb");
     if (fp == NULL) {
         printf("Impossivel abrir ficheiro");
-    }
-    else {
-        for (int i = 0; i < NUMERO_MAXIMO_INSCRICOES; i++) {
-            fread(&inscricoes[i], sizeof(t_inscricao[i]), 1, fp);
+    } else {
+        for (int i = 0; i < posicao; i++) {
+            fread(&inscricoes[i], sizeof(t_inscricao), 1, fp);
         }
         fclose(fp);
     }
 }
 //---------------------------//---------------------------//
-//---------- Funcao que devolve a ultima posicao no ficheiro "participantes.bin" -----------------//
 
+//---------- Função que devolve a última posição no ficheiro "participantes.bin" -----------------//
 int obter_ultima_posicao_participantes(void) {
     FILE* fp;
     t_participante participantes;
@@ -621,8 +656,7 @@ int obter_ultima_posicao_participantes(void) {
     if (fp == NULL) {
         printf("Impossivel abrir ficheiro");
         ultima_pos = 0;
-    }
-    else {
+    } else {
         while ((fread(&participantes, sizeof(t_participante), 1, fp) == 1)) {
             //  printf("%d - %d, %s, %s, %s, %s, %s\n", ultima_pos, participantes.identificador, participantes.nome, participantes.escola, participantes.nif, participantes.email, participantes.telefone);
             ultima_pos++;
@@ -632,7 +666,7 @@ int obter_ultima_posicao_participantes(void) {
     return ultima_pos;
 }
 
-//---------- Funcao que devolve a ultima posicao no ficheiro "atividades.bin" -----------------//
+//---------- Função que devolve a última posição no ficheiro "atividades.bin" -----------------//
 int obter_ultima_posicao_atividades(void) {
     FILE* fp;
     t_atividade atividades;
@@ -641,8 +675,7 @@ int obter_ultima_posicao_atividades(void) {
     if (fp == NULL) {
         printf("Impossivel abrir ficheiro");
         ultima_pos = 0;
-    }
-    else {
+    } else {
         while ((fread(&atividades, sizeof(t_atividade), 1, fp) == 1)) {
             //  printf("%d - %d, %s, %s, %s, %s, %s, %s, %s\n", ultima_pos, atividades.identificador, atividades.nome, atividades.data, atividades.hora, atividades.local, atividades.tipo, atividades.associacao, atividades.valorInscricao);
             ultima_pos++;
@@ -653,7 +686,7 @@ int obter_ultima_posicao_atividades(void) {
 }
 //---------------------------//---------------------------//
 
-//---------- Funcao que devolve a ultima posicao no ficheiro "inscricoes.bin" -----------------//
+//---------- Função que devolve a última posição no ficheiro "inscricoes.bin" -----------------//
 int obter_ultima_posicao_inscricoes(void) {
     FILE* fp;
     t_inscricao inscricoes;
@@ -663,8 +696,7 @@ int obter_ultima_posicao_inscricoes(void) {
     if (fp == NULL) {
         printf("Impossivel abrir ficheiro");
         ultima_pos = 0;
-    }
-    else {
+    } else {
         while ((fread(&inscricoes, sizeof(t_inscricao), 1, fp) == 1)) {
             // printf("%d - %d, %s, %s, %s, %s, %s\n", ultima_pos, inscricoes.identificador, inscricoes.identificadorParticipante, inscricoes.identificadorAtividade, inscricoes.valorPago, inscricoes.data, inscricoes.hora);
             ultima_pos++;
@@ -673,7 +705,9 @@ int obter_ultima_posicao_inscricoes(void) {
     }
     return ultima_pos;
 }
+//---------------------------//---------------------------//
 
+//---------- Função para validar um intervalo de números inteiros -----------------//
 int le_numero_intrevalo(int min, int max) {
     int numero;
     do {
@@ -685,11 +719,14 @@ int le_numero_intrevalo(int min, int max) {
     } while (numero<min && numero>max);
     return numero;
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar o nome introduzido -----------------//
 char* le_nome(void) {
     static char nome[TAMANHO_NOME + 1];
     do {
         printf("Introduza o nome: ");
-        scanf("%s", &nome);
+        gets(nome);
 
         if (strlen(nome) > TAMANHO_NOME || strlen(nome) < 3)
             printf("O tamanho do nome nao deve ser maior que %d nem menor que 3\n", TAMANHO_NOME);
@@ -697,11 +734,15 @@ char* le_nome(void) {
 
     return nome;
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar o nome da atividade introduzida -----------------//
 char* le_nome_atividade(void) {
     static char nome[TAMANHO_NOME_ATIVIDADE + 1];
     do {
         printf("Introduza o nome da atividade: ");
-        scanf("%s", &nome);
+        //scanf("%s[^\n]", &nome);
+        gets(nome);
 
         if (strlen(nome) > TAMANHO_NOME_ATIVIDADE || strlen(nome) < 3)
             printf("O tamanho do nome nao deve ser maior que %d nem menor que 3\n", TAMANHO_NOME_ATIVIDADE);
@@ -709,34 +750,39 @@ char* le_nome_atividade(void) {
 
     return nome;
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar o email introduzido -----------------//
 char* le_email(void) {
     static char email[TAMANHO_EMAIL + 1];
     int aux = 0;
     do {
         aux = 0;
         printf("Introduza o email do participante: ");
-        scanf("%s", &email);
+        gets(email);
         if (strlen(email) > TAMANHO_EMAIL || strlen(email) < 10) {
             printf("O tamanho do email nao deve ser maior que %d nem menor que 10\n", TAMANHO_NOME);
             aux = 1;
 
-        }
-        else if (strstr(email, "@") == NULL) {
+        } else if (strstr(email, "@") == NULL) {
             printf("O email nao contem @\n");
             aux = 1;
         }
     } while (aux == 1);
     return email;
 }
-//Funcao para validar o nif em termos de comprimento, como de caracteres indesejados
+//---------------------------//---------------------------//
+
+//---------- Função para validar o nif em termos de comprimento e de caracteres indesejados -----------------//
 char* le_nif(void) {
     static char  nif[10];
     int aux = 0;
+    fflush(stdin);
     do {
         aux = 0;
         printf("Introduza o nif do participante: ");
-        scanf(" %9s[^\n]", &nif);
-        for (int i = 0; i < sizeof(nif) - 1;i++) {
+        gets(nif);
+        for (int i = 0; i < sizeof(nif) - 1; i++) {
             if (!isdigit(nif[i]) && aux != 1) {
                 printf("NIF invalido\n");
                 aux = 1;
@@ -749,14 +795,17 @@ char* le_nif(void) {
     } while (aux == 1);
     return nif;
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar o número de telefone introduzido -----------------//
 char* le_telefone(void) {
     static char  telefone[10];
     int aux = 0;
     do {
         aux = 0;
         printf("Introduza o telefone do participante: ");
-        scanf("%9s[^\n]", &telefone);
-        for (int i = 0; i < sizeof(telefone) - 1;i++) {
+        gets(telefone);
+        for (int i = 0; i < sizeof(telefone) - 1; i++) {
             if (!isdigit(telefone[i]) && aux != 1) {
                 printf("Numero de telefone invalido\n");
                 aux = 1;
@@ -768,9 +817,10 @@ char* le_telefone(void) {
         }
     } while (aux == 1);
     return telefone;
-
 }
+//---------------------------//---------------------------//
 
+//---------- Função para validar o número de telefone introduzido -----------------//
 int valida_dia(int dia, int mes) {
     int aux = 0;
     if ((!(dia >= 1 && dia <= 31) && !(mes == 1 || mes == 3 || mes == 5 || mes == 7 || mes == 8 || mes == 10 || mes == 12)) && (!(dia >= 1 && dia <= 30) && !(mes == 4 || mes == 6 || mes == 9 || mes == 11)) && (!(dia >= 1 && dia <= 28) && !(mes == 2))) {
@@ -779,6 +829,9 @@ int valida_dia(int dia, int mes) {
     }
     return aux;
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar o mês introduzido -----------------//
 int valida_mes(int mes) {
     int aux = 0;
     if (!(mes >= 1 && mes <= 12)) {
@@ -787,6 +840,9 @@ int valida_mes(int mes) {
     }
     return aux;
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar o ano introduzido -----------------//
 int valida_ano(int ano) {
     int aux = 0;
     if (!(ano > 2000 && ano < 3000)) {
@@ -795,6 +851,9 @@ int valida_ano(int ano) {
     }
     return aux;
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar a data introduzida no formato (DD-MM-YYYY) -----------------//
 char* le_data(void) {
     int dia, mes, ano, aux = 0, aux_dia = 0, aux_mes = 0, aux_ano = 0, check;
     static char data[11];
@@ -811,12 +870,13 @@ char* le_data(void) {
         aux_dia = valida_dia(dia, mes);
         aux_ano = valida_ano(ano);
         if (aux_mes != 1 || aux_ano != 1 || aux_dia != 1 || aux != 1)
-            sprintf(data, "%d-%d-%d", dia, mes, ano);
-
+            sprintf(data, "%02d-%02d-%02d", dia, mes, ano);
     } while (aux_mes == 1 || aux_ano == 1 || aux_dia == 1 || aux == 1);
     return data;
-
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar o formato da data introduzida -----------------//
 int valida_formato_data_hora(int check) {
     int aux = 0;
     if (check != 3 && check != 2) {
@@ -826,7 +886,9 @@ int valida_formato_data_hora(int check) {
     }
     return aux;
 }
+//---------------------------//---------------------------//
 
+//---------- Função para validar as horas introduzidas no formato (hh:mm) -----------------//
 char* le_hora(void) {
     int horas, minutos, aux = 0, check;
     static char hora[5];
@@ -838,8 +900,7 @@ char* le_hora(void) {
         if (!(horas <= 23 && horas >= 0)) {
             printf("Horas invalidas");
             aux = 1;
-        }
-        else if (!(minutos >= 0 && minutos <= 59)) {
+        } else if (!(minutos >= 0 && minutos <= 59)) {
             printf("Minutos invalidos");
             aux = 1;
         }
@@ -849,23 +910,24 @@ char* le_hora(void) {
     fflush(stdin);
     return hora;
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar as horas da incrição introduzida -----------------//
 char* le_horas_inscricao(void) {
     int horas, minutos, segundos, aux = 0, check;
     static char hora[9];
     do {
         aux = 0;
-        printf("Introduza as horas no formato (hh:mm:ss): ");
-        check = scanf("%d:%d", &horas, &minutos);
+        printf("Introduza as horas da inscricao no formato (hh:mm:ss): ");
+        check = scanf("%d:%d:%d", &horas, &minutos, &segundos);
         aux = valida_formato_data_hora(check);
         if (!(horas <= 23 && horas >= 0)) {
             printf("Horas invalidas\n");
             aux = 1;
-        }
-        else if (!(minutos >= 0 && minutos <= 59)) {
+        } else if (!(minutos >= 0 && minutos <= 59)) {
             printf("Minutos invalidos\n");
             aux = 1;
-        }
-        else if (!(segundos >= 0 && segundos <= 59)) {
+        } else if (!(segundos >= 0 && segundos <= 59)) {
             printf("Segundos invalidos\n");
             aux = 1;
         }
@@ -875,18 +937,23 @@ char* le_horas_inscricao(void) {
     } while (aux == 1);
     return hora;
 }
+//---------------------------//---------------------------//
+
+//---------- Função para validar o local introduzido -----------------//
 char* le_local(void) {
     static char local[TAMANHO_LOCAL + 1];
     do {
         printf("Introduza o local da atividade: ");
-        scanf("%s", &local);
+        gets(local);
         if (strlen(local) > TAMANHO_NOME || strlen(local) < 3)
             printf("O tamanho do local nao deve ser maior que %d nem menor que 3\n", TAMANHO_LOCAL);
     } while (strlen(local) > TAMANHO_NOME || strlen(local) < 3);
     fflush(stdin);
     return local;
 }
+//---------------------------//---------------------------//
 
+//---------- Função para validar o valor da inscrição introduzida -----------------//
 float le_valor_inscricao(void) {
     float valor;
     do {
@@ -896,4 +963,96 @@ float le_valor_inscricao(void) {
             printf("O valor nao pode ser negativo\n");
     } while (valor < 0);
     return valor;
+}
+//---------------------------//---------------------------//
+
+//---------- Função que lê o ficheiro das atividades -----------------//
+void le_ficheiro_atividades(t_atividade atividades[]) {
+    FILE* fp;
+    fp = fopen(FICHEIRO_ATIVIDADES, "rb");
+    if (fp == NULL) {
+        printf("Impossivel abrir ficheiro");
+    } else {
+        for (int i = 0; i < NUMERO_MAXIMO_ATIVIDADES; i++) {
+            fread(&atividades[i], sizeof(t_atividade[i]), 1, fp);
+        }
+        fclose(fp);
+    }
+}
+//---------------------------//---------------------------//
+
+//---------- Função que mostra o número de atividades realizadas por associação -----------------//
+void numero_atividades_realizadas_por_associacao(t_atividade atividades[]) {
+    int num_atividade_AE_ESTG = 0, num_atividade_AE_ESECS = 0, num_atividade_AE_ESSLEI = 0, num_atividade_AE_ESAD = 0, num_atividade_AE_ESTM = 0, quant_total_atividades = 0;
+    quant_total_atividades  = obter_ultima_posicao_atividades();
+    for(int i=0; i < quant_total_atividades; i++) {
+        if(strcmp(atividades[i].associacao, "AE-ESTG") == 0)
+            num_atividade_AE_ESTG++;
+        else if(strcmp(atividades[i].associacao, "AE-ESECS") == 0)
+            num_atividade_AE_ESECS++;
+        else if(strcmp(atividades[i].associacao, "AE-ESSLEI") == 0)
+            num_atividade_AE_ESSLEI++;
+        else if(strcmp(atividades[i].associacao, "AE-ESAD") == 0)
+            num_atividade_AE_ESAD++;
+        else if(strcmp(atividades[i].associacao, "AE-ESTM") == 0)
+            num_atividade_AE_ESTM++;
+    }
+    printf("\nAssociacao | Numero de atividades \nAE-ESTG    | %d\nAE-ESECS   | %d\nAE-ESSLEI  | %d\nAE-ESAD    | %d\nAE-ESTM    | %d", num_atividade_AE_ESTG, num_atividade_AE_ESECS, num_atividade_AE_ESSLEI, num_atividade_AE_ESAD, num_atividade_AE_ESTM);
+}
+//---------------------------//---------------------------//
+
+//---------- Função que mostra a percentagem (%) de inscrições por escola -----------------//
+void percentagem_inscricoes_por_escola(t_inscricao inscricoes[], t_participante participantes[]) {
+    int num_inscricoes_ESTG = 0, num_inscricoes_ESECS = 0, num_inscricoes_ESSLEI = 0, num_inscricoes_ESAD = 0, num_inscricoes_ESTM = 0, identificador_participante, quant_total_inscricoes = 0, percentagem_ESTG, percentagem_ESSECS, percentagem_ESSLEI, percentagem_ESAD, percentagem_ESTM;
+    quant_total_inscricoes  = obter_ultima_posicao_inscricoes();
+    for(int i=0; i < quant_total_inscricoes; i++) {
+        identificador_participante = inscricoes[i].identificadorParticipante;
+        if(strcmp(participantes[identificador_participante].escola, "ESTG") == 0)
+            num_inscricoes_ESTG++;
+        else if(strcmp(participantes[identificador_participante].escola, "ESECS") == 0)
+            num_inscricoes_ESECS++;
+        else if(strcmp(participantes[identificador_participante].escola, "ESSLEI") == 0)
+            num_inscricoes_ESSLEI++;
+        else if(strcmp(participantes[identificador_participante].escola, "ESAD") == 0)
+            num_inscricoes_ESAD++;
+        else if(strcmp(participantes[identificador_participante].escola, "ESTM") == 0)
+            num_inscricoes_ESTM++;
+    }
+    percentagem_ESTG = (num_inscricoes_ESTG * 100) / quant_total_inscricoes;
+    percentagem_ESSECS = (num_inscricoes_ESECS * 100) / quant_total_inscricoes;
+    percentagem_ESSLEI = (num_inscricoes_ESSLEI * 100) / quant_total_inscricoes;
+    percentagem_ESAD = (num_inscricoes_ESAD * 100) / quant_total_inscricoes;
+    percentagem_ESTM = (num_inscricoes_ESTM * 100) / quant_total_inscricoes;
+    printf("\nEscola  | Percentagem de inscricoes \nESTG    | %d%%\nESECS   | %d%%\nESSLEI  | %d%%\nESAD    | %d%%\nESTM    | %d%%", percentagem_ESTG, percentagem_ESSECS, percentagem_ESSLEI, percentagem_ESAD, percentagem_ESTM);
+}
+//---------------------------//---------------------------//
+
+
+//Se o segundo ano for maior que o primeiro ano, então o mês e o dia podem ser inferiores ao primeiro ano. Ou seja, não precisa de validações.
+//Se o segundo ano for igual ao primeiro ano, então verifica-se o mês e o dia do segundo ano.
+void valida_data_maior() {
+    char datas[2][11], aux_dia[2][2], aux_mes[2][2], aux_ano[2][4];
+    int dia[2], mes[2], ano[2];
+    strcpy(datas[0],le_data());
+    strcpy(datas[1],le_data());
+
+    for(int i=0; i<2; i++) {
+        printf("--%d--", i);
+        aux_dia[i][0] = datas[i][0];
+        aux_dia[i][1] = datas[i][1];
+        dia[i] = atoi(aux_dia[i]);
+
+        aux_mes[i][0] = datas[i][3];
+        aux_mes[i][1] = datas[i][4];
+        mes[i] = atoi(aux_mes[i]);
+
+        aux_ano[i][0] = datas[i][6];
+        aux_ano[i][1] = datas[i][7];
+        aux_ano[i][2] = datas[i][8];
+        aux_ano[i][3] = datas[i][9];
+        ano[i] = atoi(aux_ano[i]);
+
+    }
+    printf("%d, %d, %d\n", dia[0], mes[0], ano[0]);
+    printf("%d, %d, %d\n", dia[1], mes[1], ano[1]);
 }

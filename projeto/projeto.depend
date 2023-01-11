@@ -25,15 +25,13 @@
 	"constantes.h"
 	"funcoes.h"
 
-1671020011 source:c:\users\kikof\onedrive - ipleiria\desktop\trabalhosipleiria\1_semestre\fp\projeto\projeto-fp\projeto\main.c
+1673381737 source:c:\users\kikof\onedrive - ipleiria\desktop\trabalhosipleiria\1_semestre\fp\projeto\projeto-fp\projeto\main.c
 	<stdio.h>
 	<stdlib.h>
 	<locale.h>
 	<ctype.h>
 	<string.h>
-	"constantes.h"
-	"funcoes.h"
-	"menus.h"
+	<locale.h>
 
 1670931312 c:\users\kikof\onedrive - ipleiria\desktop\trabalhosipleiria\1_semestre\fp\projeto\projeto-fp\projeto\constantes.h
 
