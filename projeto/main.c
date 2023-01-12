@@ -126,8 +126,9 @@ void percentagem_inscricoes_por_escola(t_inscricao inscricoes[], t_participante 
 //---------------------------//---------------------------//
 
 //---------- Protótipos das funções para validar as datas inseridas pelo utilizador e Mostrar o valor total das inscrções entre duas datas por tipo de atividade -----------------//
-void valida_data_maior(void);
+void valida_data_maior(t_inscricao inscricoes[], int posicao);
 t_data le_data_estatistica();
+t_data le_data_estatistica_vetor(t_inscricao inscricoes[], int posicao);
 //---------------------------//---------------------------//
 
 //---------- Protótipos das funções para a leitura de dados e validações de dados -----------------//
@@ -268,7 +269,7 @@ int main() {
                     break;
                 case '3':
                     printf("Estatisticas do valor total das inscricoes entre duas datas por tipo de atividade\n");
-                    valida_data_maior();
+                    valida_data_maior(inscricoes, posicao_inscricoes);
                     fflush(stdin);
                     getchar();
                     break;
@@ -615,14 +616,16 @@ void mostra_atividade(int posicao) {
 void mostra_inscricao(int posicao) {
     FILE* fp;
     t_inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES];
+    char nomes_campos[6][16] = { "ID", "ID Participante", "ID Atividade", "Valor Pago", "Data", "Hora" };
     fp = fopen(FICHEIRO_INSCRICOES, "rb");
     if (fp == NULL) {
         printf("Nenhum registo de inscricoes");
     }
     else {
+        printf("\nQuatidade de registos: %d\n%-6s | %-15s | %-12s | %-10s | %-10s | %-8s\n------ | --------------- | ------------ | ---------- | ---------- | --------\n", posicao, nomes_campos[0], nomes_campos[1], nomes_campos[2], nomes_campos[3], nomes_campos[4], nomes_campos[5]);
         for (int i = 0; i < posicao; i++) {
             fread(&inscricoes[i], sizeof(t_inscricao), 1, fp);
-            printf("%d, %d, %d, %.2f, %s, %s\n", inscricoes[i].identificador, inscricoes[i].identificador_participante, inscricoes[i].identificador_atividade, inscricoes[i].valor_pago, inscricoes[i].data, inscricoes[i].hora);
+            printf("%-6d | %-15d | %-12d | %-10.2f | %-10s | %-8s\n", inscricoes[i].identificador, inscricoes[i].identificador_participante, inscricoes[i].identificador_atividade, inscricoes[i].valor_pago, inscricoes[i].data, inscricoes[i].hora);
         }
         fclose(fp);
     }
@@ -1093,22 +1096,87 @@ void percentagem_inscricoes_por_escola(t_inscricao inscricoes[], t_participante 
 
 //Se o segundo ano for maior que o primeiro ano, então o mês e o dia podem ser inferiores ao primeiro ano. Ou seja, não precisa de validações.
 //Se o segundo ano for igual ao primeiro ano, então verifica-se o mês e o dia do segundo ano.
-void valida_data_maior() {
+void valida_data_maior(t_inscricao inscricoes[], int posicao) {
     t_data primeira_data, segunda_data;
-
-    primeira_data=le_data_estatistica();
-    segunda_data=le_data_estatistica();
+    int ultima_posicao, soma = 0;
+    primeira_data = le_data_estatistica();
     printf("%d-%d-%d\n", primeira_data.dia, primeira_data.mes, primeira_data.ano);
-    printf("%d-%d-%d", segunda_data.dia, segunda_data.mes, segunda_data.ano);
+    fflush(stdin);
+    for (int i = 0;i < posicao;i++) {
+        segunda_data = le_data_estatistica_vetor(inscricoes, i);
+        fflush(stdin);
+        if (segunda_data.ano > primeira_data.ano) {
+            printf("ano:%d\n", segunda_data.ano);
+            soma += inscricoes[i].valor_pago;
+        }
+        else if (segunda_data.ano == primeira_data.ano) {
+            if (segunda_data.mes < primeira_data.mes)
+                printf("Mes menor");
+            else if (segunda_data.mes >= primeira_data.mes) {
+                if (segunda_data.dia < primeira_data.dia)
+                    printf("dia menor");
+                else if (segunda_data.dia >= primeira_data.dia) {
+                    printf("dia:%d\n", segunda_data.ano);
+                    soma += inscricoes[i].valor_pago;
+                }
+            }
+        }
+        else {
+            printf("ano menor");
+        }
+
+        //soma += inscricoes[i].valor_pago;
+
+    }
+    printf("Valor pago: %d", soma);
+    
+    //segunda_data=le_data_estatistica();
+    //printf("%d-%d-%d\n", primeira_data.dia, primeira_data.mes, primeira_data.ano);
+    //printf("%d-%d-%d\n", segunda_data.dia, segunda_data.mes, segunda_data.ano);
+
+    /*if (segunda_data.ano > primeira_data.ano) {
+        printf("TOP CHUCHA");
+    }
+    else if (segunda_data.ano == primeira_data.ano) {
+        if (segunda_data.mes < primeira_data.mes)
+            printf("Mes menor");
+        else if (segunda_data.mes >= primeira_data.mes) {
+            if (segunda_data.dia < primeira_data.dia)
+                printf("dia menor");
+            else if (segunda_data.dia >= primeira_data.dia) {
+                printf("TOP CHUCHA");
+            }
+        }
+    }
+    else {
+        printf("ano menor");
+    }*/
+
+
+    /*
+    if(segunda_data.ano>primeira_data.ano){
+        printf("TOP CHUCHA");
+    }else if(segunda_data.ano==primeira_data.ano){
+       if(segunda_data.mes<primeira_data.mes)
+            printf("Mes menor");
+        else if(segunda_data.mes>=primeira_data.mes){
+            if(segunda_data.dia<primeira_data.dia)
+                printf("dia menor");
+            else if(segunda_data.dia>=primeira_data.dia){
+                printf("TOP CHUCHA");
+            }
+        }
+    }else{
+        printf("ano menor");
+    }
+    */
+
+
 }
 t_data le_data_estatistica() {
     t_data data;
-    char data_1[11], data_2[11], aux_dia[3], aux_mes[3], aux_ano[5];
+    char data_1[11], aux_dia[3], aux_mes[3], aux_ano[5];
     strcpy(data_1, le_data());
-    for(int i = 0; i<11;i++){
-        //printf("%c",data_1[i]);
-    }
-    
     aux_dia[0] = data_1[0];
     aux_dia[1] = data_1[1];
     data.dia = atoi(aux_dia);
@@ -1123,5 +1191,26 @@ t_data le_data_estatistica() {
     data.ano = atoi(aux_ano);
     //printf("Dia: %d\nMes: %d\nAno: %d", data.dia, data.mes, data.ano);
     return data;
-    
+
+}
+t_data le_data_estatistica_vetor(t_inscricao inscricoes[], int posicao) {
+    t_data data;
+    char aux_dia[3], aux_mes[3], aux_ano[5];
+
+    aux_dia[0] = inscricoes[posicao].data[0];
+    aux_dia[1] = inscricoes[posicao].data[1];
+    data.dia = atoi(aux_dia);
+
+    aux_mes[0] = inscricoes[posicao].data[3];
+    aux_mes[1] = inscricoes[posicao].data[4];
+    data.mes = atoi(aux_mes);
+    fflush(stdin);
+    aux_ano[0] = inscricoes[posicao].data[6];
+    aux_ano[1] = inscricoes[posicao].data[7];
+    aux_ano[2] = inscricoes[posicao].data[8];
+    aux_ano[3] = inscricoes[posicao].data[9];
+    data.ano = atoi(aux_ano);
+    //printf("Dia: %d Mes: %d Ano: %d\n", data.dia, data.mes, data.ano);
+    return data;
+
 }
