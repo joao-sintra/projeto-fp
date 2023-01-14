@@ -82,7 +82,6 @@ typedef struct {
 //---------------------------//---------------------------//
 
 //---------- Protótipos das funções para os menus -----------------//
-
 char menu_principal(void);
 char menu_registar(void);
 char menu_consultar(void);
@@ -127,16 +126,15 @@ void percentagem_inscricoes_por_escola(t_inscricao inscricoes[], t_participante 
 
 //---------- Protótipos das funções para validar as datas inseridas pelo utilizador e Mostrar o valor total das inscrções entre duas datas por tipo de atividade -----------------//
 void valida_horizonte_temporal(t_inscricao inscricoes[], int posicao, t_atividade atividades[]);
-
 //---------------------------//---------------------------//
 
-//---------- Protótipos das funções para a leitura de dados e validações de dados -----------------//
+//---------- Protótipos das funções para a leitura e validação de dados -----------------//
 char* le_nome(void);
-int le_numero_intrevalo(int min, int max);
+int le_numero_intervalo(int min, int max);
 char* le_nome_atividade(void);
 char* le_email(void);
 char* le_nif(t_participante participantes[], int posicao);
-char* le_telefone();
+char* le_telefone(void);
 int valida_dia(int dia, int mes);
 int valida_mes(int mes);
 int valida_ano(int ano);
@@ -147,7 +145,7 @@ t_hora le_hora(void);
 t_hora le_horas_inscricao(void);
 t_data le_data(void);
 char* le_local(void);
-float le_valor_atividade();
+float le_valor_atividade(void);
 float le_valor_pago(t_atividade atividades[], int id_atividade);
 int valida_formato_data(int check);
 int valida_formato_hora(int check);
@@ -157,7 +155,6 @@ int valida_segunda_data_vetor(t_inscricao inscricoes_aux[], t_inscricao inscrico
 void mostra_valores_por_tipo_atividade(int contador, t_inscricao inscricoes_validadas[], t_atividade atividades[]);
 t_data valida_data_inscricao(t_atividade atividades[], int posicao);
 t_hora valida_hora_inscricao(t_atividade atividades[], int posicao, t_data data_inscricao);
-
 //---------------------------//---------------------------//
 
 int main() {
@@ -175,7 +172,7 @@ int main() {
     // posicao = 4;
 
     do {
-        // system("cls");
+        system("cls");
         preenche_participantes(participantes, posicao_participantes);
         preenche_atividades(atividades, posicao_atividades);
         preenche_inscricoes(inscricoes, posicao_inscricoes);
@@ -265,7 +262,6 @@ int main() {
                 escolha_estatistica = menu_estatisticas();
                 fflush(stdin);
                 switch (escolha_estatistica) {
-
                 case '1':
                     printf("Estatisticas do numero de atividades realizadas por cada associacao: \n");
                     numero_atividades_realizadas_por_associacao(atividades);
@@ -284,7 +280,7 @@ int main() {
                     printf("Estatisticas do valor total das inscricoes entre duas datas por tipo de atividade\n");
                     valida_horizonte_temporal(inscricoes, posicao_inscricoes, atividades);
                     fflush(stdin);
-                    printf("\n(ENTER) para continuar");
+                    printf("\n\n(ENTER) para continuar");
                     getchar();
                     break;
                 case '0':
@@ -376,7 +372,7 @@ char menu_consultar(void) {
 char menu_estatisticas(void) {
     char opcao;
     do {
-        printf("*********************** Menu Estatisticas ***********************\n \n");
+        printf("*********************** Menu Estatisticas ***********************\n");
         printf("[1] Estatisticas do numero de atividades realizadas por cada associacao\n");
         printf("[2] Estatisticas da percentagem de inscricoes por escola\n");
         printf("[3] Estatisticas do valor total das inscricoes entre duas datas por tipo de atividade\n");
@@ -401,14 +397,14 @@ char menu_saida(void) {
         if (opcao != 'S' && opcao != 'N')
             printf("Opcao invalida\n");
     } while (opcao != 'S' && opcao != 'N');
+    return opcao;
 }
 //---------------------------//---------------------------//
 
 //---------- Função para Registar os Participantes -----------------//
 void regista_participante(t_participante participantes[], int* posicao, int* quantidade_participantes_por_adicionar) {
-    int pos_aux = *posicao, numero_escola;
-    char escolas[5][7] = { "ESTG","ESECS","ESSLEI", "ESAD", "ESTM" };
-    if (posicao < NUMERO_MAXIMO_ESTUDANTES - 1) {
+    int pos_aux = *posicao;
+    if (pos_aux < NUMERO_MAXIMO_ESTUDANTES - 1) {
         participantes[*posicao].identificador = *posicao;
 
         strcpy(participantes[*posicao].nome, le_nome());
@@ -422,7 +418,7 @@ void regista_participante(t_participante participantes[], int* posicao, int* qua
         *quantidade_participantes_por_adicionar += 1;
     }
     else
-        printf("O numero maximo de participantes exedido\n");
+        printf("O numero maximo de participantes excedido\n");
 }
 //---------------------------//---------------------------//
 
@@ -483,7 +479,7 @@ char* devolve_tipo_atividade() {
 //---------- Função para Registar as Atividades -----------------//
 void regista_atividade(t_atividade atividades[], int* posicao, int* quantidade_atividades_por_adicionar) {
     int pos_aux = *posicao;
-    if (posicao < NUMERO_MAXIMO_ATIVIDADES - 1) {
+    if (pos_aux < NUMERO_MAXIMO_ATIVIDADES - 1) {
         atividades[*posicao].identificador = *posicao;
         strcpy(atividades[*posicao].nome, le_nome_atividade());
         fflush(stdin);
@@ -501,14 +497,14 @@ void regista_atividade(t_atividade atividades[], int* posicao, int* quantidade_a
         *quantidade_atividades_por_adicionar += 1;
     }
     else
-        printf("O numero maximo de atividades exedido\n");
+        printf("O numero maximo de atividades excedido\n");
 }
 //---------------------------//---------------------------//
 
 //---------- Função para Registar as Inscrições -----------------//
 void regista_inscricao(t_inscricao inscricoes[], t_atividade atividades[], int* posicao, int posicao_participantes, int posicao_atividade, int* quantidade_inscricoes_por_adicionar) {
-    int pos_aux = *posicao, aux = 0;
-    if (posicao < NUMERO_MAXIMO_INSCRICOES - 1) {
+    int pos_aux = *posicao;
+    if (pos_aux < NUMERO_MAXIMO_INSCRICOES - 1) {
         if (posicao_atividade == 0 || posicao_participantes == 0) {
             printf("Nao existe atividades ou participantes para realizar uma inscricao");
             getchar();
@@ -517,10 +513,10 @@ void regista_inscricao(t_inscricao inscricoes[], t_atividade atividades[], int* 
             inscricoes[*posicao].identificador = *posicao;
             mostra_participante(posicao_participantes);
             printf("\nIntroduza o ID do participante: ");
-            inscricoes[*posicao].identificador_participante = le_numero_intrevalo(0, posicao_participantes - 1);
+            inscricoes[*posicao].identificador_participante = le_numero_intervalo(0, posicao_participantes - 1);
             mostra_atividade(posicao_atividade);
             printf("\nIntroduza o ID da atividade: ");
-            inscricoes[*posicao].identificador_atividade = le_numero_intrevalo(0, posicao_atividade - 1);
+            inscricoes[*posicao].identificador_atividade = le_numero_intervalo(0, posicao_atividade - 1);
             inscricoes[*posicao].valor_pago = le_valor_pago(atividades, inscricoes[*posicao].identificador_atividade);
             inscricoes[*posicao].data = valida_data_inscricao(atividades, inscricoes[*posicao].identificador_atividade);
             fflush(stdin);
@@ -530,7 +526,7 @@ void regista_inscricao(t_inscricao inscricoes[], t_atividade atividades[], int* 
         }
     }
     else
-        printf("O numero maximo de inscricoes exedido\n");
+        printf("O numero maximo de inscricoes excedido\n");
 }
 //---------------------------//---------------------------//
 
@@ -776,7 +772,7 @@ int obter_ultima_posicao_inscricoes(void) {
 //---------------------------//---------------------------//
 
 //---------- Função para validar um intervalo de números inteiros -----------------//
-int le_numero_intrevalo(int min, int max) {
+int le_numero_intervalo(int min, int max) {
     int numero;
     do {
         scanf("%d", &numero);
@@ -842,7 +838,7 @@ char* le_email(void) {
 }
 //---------------------------//---------------------------//
 
-//---------- Função para validar o nif em termos de comprimento e de caracteres indesejados e também valida se o nif é único -----------------//
+//---------- Função para validar o NIF em termos de comprimento e de caracteres indesejados e também valida se o NIF é único -----------------//
 char* le_nif(t_participante participantes[], int posicao) {
     static char nif[10];
     int aux = 0;
@@ -1122,8 +1118,8 @@ void percentagem_inscricoes_por_escola(t_inscricao inscricoes[], t_participante 
 void valida_horizonte_temporal(t_inscricao inscricoes[], int posicao, t_atividade atividades[]) {
     t_data primeira_data, segunda_data;
     t_inscricao inscricoes_aux[NUMERO_MAXIMO_INSCRICOES], inscricoes_validadas[NUMERO_MAXIMO_INSCRICOES];
-    int ultima_posicao, soma = 0, contador1 = 0, contador2 = 0, aux = 0;
-    float soma_desporto = 0;
+    int contador1 = 0, contador2 = 0, aux = 0;
+
     do {
         printf("Primeira data - ");
         primeira_data = le_data();
@@ -1137,11 +1133,10 @@ void valida_horizonte_temporal(t_inscricao inscricoes[], int posicao, t_atividad
     contador2 = valida_segunda_data_vetor(inscricoes_aux, inscricoes_validadas, contador1, segunda_data);
     mostra_valores_por_tipo_atividade(contador2, inscricoes_validadas, atividades);
 }
-//Esta funcção mostra a soma dos valores das inscricoes por tipo de ativdade   
+//Esta funcção mostra a soma dos valores das inscricoes por tipo de ativdade
 void mostra_valores_por_tipo_atividade(int contador, t_inscricao inscricoes_validadas[], t_atividade atividades[]) {
     float soma_valor_desporto = 0.0, soma_valor_lazer = 0.0, soma_valor_academica = 0.0, soma_valor_cultura = 0.0, soma_valor_formacao = 0.0, soma_valor_outra = 0.0;
     for (int i = 0;i < contador;i++) {
-        printf("%d - %s - %s\n", inscricoes_validadas[i].identificador, inscricoes_validadas[i].data, atividades[inscricoes_validadas[i].identificador_atividade].tipo);
         if (strcmp(atividades[inscricoes_validadas[i].identificador_atividade].tipo, "Desporto") == 0) {
             soma_valor_desporto += inscricoes_validadas[i].valor_pago;
         }
@@ -1161,13 +1156,12 @@ void mostra_valores_por_tipo_atividade(int contador, t_inscricao inscricoes_vali
             soma_valor_outra += inscricoes_validadas[i].valor_pago;
         }
     }
-    printf("Tipo Atividade | Valor Total\n-------------- | -----------\nAcademica      | %-12.2f\nLazer          | %-12.2f\nCultura        | %-12.2f\nDesporto       | %-12.2f\nFormacao       | %-12.2f\nOutra          | %-12.2f\n-------------- | -----------\nTotal          | %.2f", soma_valor_academica, soma_valor_lazer, soma_valor_cultura, soma_valor_desporto, soma_valor_formacao, soma_valor_outra, soma_valor_academica + soma_valor_cultura + soma_valor_desporto + soma_valor_formacao + soma_valor_lazer + soma_valor_outra);
+    printf("\nTipo Atividade | Valor Total\n-------------- | -----------\nAcademica      | %-12.2f\nLazer          | %-12.2f\nCultura        | %-12.2f\nDesporto       | %-12.2f\nFormacao       | %-12.2f\nOutra          | %-12.2f\n-------------- | -----------\nTotal          | %.2f", soma_valor_academica, soma_valor_lazer, soma_valor_cultura, soma_valor_desporto, soma_valor_formacao, soma_valor_outra, soma_valor_academica + soma_valor_cultura + soma_valor_desporto + soma_valor_formacao + soma_valor_lazer + soma_valor_outra);
 }
 //Esta funcção valida se o data_vetor que é a data de cada inscrição é maior que a primeira data do horizonte temporal
 int valida_primeira_data_vetor(t_inscricao inscricoes[], t_inscricao inscricoes_aux[], int posicao, t_data data) {
     int cont = 0;
     t_data data_vetor;
-
     for (int i = 0;i < posicao;i++) {
         data_vetor = inscricoes[i].data;
 
@@ -1180,7 +1174,6 @@ int valida_primeira_data_vetor(t_inscricao inscricoes[], t_inscricao inscricoes_
                 if (data_vetor.dia >= data.dia) {
                     inscricoes_aux[cont] = inscricoes[i];
                     cont++;
-
                 }
             }
         }
@@ -1206,10 +1199,9 @@ int valida_segunda_data_vetor(t_inscricao inscricoes_aux[], t_inscricao inscrico
             }
         }
     }
-
     return cont;
 }
-//Esta função valida a diferença entre duas datas 
+//Esta função valida a diferença entre duas datas
 //e devolve 0 ou 1, 0 significa que a segunda data é maior que a primeira e o 1 é o inverso
 int valida_diferencas_datas(t_data primeira_data, t_data segunda_data) {
     int aux = 0;
@@ -1230,10 +1222,9 @@ int valida_diferencas_datas(t_data primeira_data, t_data segunda_data) {
     else {
         aux = 1;
     }
-
     return aux;
 }
-//valida e devolve a data da inscricao e verifica se a data inserida é menor do que a data das atividades 
+//valida e devolve a data da inscricao e verifica se a data inserida é menor do que a data das atividades
 t_data valida_data_inscricao(t_atividade atividades[], int posicao) {
     int aux = 0;
     t_data data;
@@ -1245,9 +1236,8 @@ t_data valida_data_inscricao(t_atividade atividades[], int posicao) {
             printf("A data inserida e superior a data da atividade\n");
     } while (aux == 1);
     return data;
-
 }
-// valida e devolve a hora da inscricao se o dia for igual ao da atividade e valida se a hora é maior do que a da atividade 
+// valida e devolve a hora da inscricao se o dia for igual ao da atividade e valida se a hora é maior do que a da atividade
 t_hora valida_hora_inscricao(t_atividade atividades[], int posicao, t_data data_inscricao) {
     int aux = 0;
     t_hora hora;
@@ -1259,7 +1249,7 @@ t_hora valida_hora_inscricao(t_atividade atividades[], int posicao, t_data data_
                 printf("As horas nao podem ser maiores do que as da atividade\n");
                 aux = 1;
             }
-            else if (hora.horas <= atividades[posicao].hora.horas && hora.minutos > atividades[posicao].hora.minutos) {
+            if (hora.horas == atividades[posicao].hora.horas && hora.minutos > atividades[posicao].hora.minutos) {
                 printf("Os minutos nao podem ser maiores do que os da atividade\n");
                 aux = 1;
             }
@@ -1268,8 +1258,6 @@ t_hora valida_hora_inscricao(t_atividade atividades[], int posicao, t_data data_
         }
         else
             aux = 0;
-
-
     } while (aux == 1);
     return hora;
 }
