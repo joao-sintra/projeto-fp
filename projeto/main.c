@@ -93,6 +93,7 @@ char menu_saida(void);
 void regista_participante(t_participante participantes[], int* posicao, int* quantidade_participantes_por_adicionar);
 char* devolve_escola();
 void mostra_participante(int posicao);
+void mostra_lista_paginada_participantes(int posicao, t_participante participantes[]);
 void preenche_participantes(t_participante participantes[], int posicao);
 void guarda_participantes_ficheiro(t_participante participantes[], int* quantidade_participantes_por_adicionar, int posicao);
 int obter_ultima_posicao_participantes(void);
@@ -103,6 +104,7 @@ void regista_atividade(t_atividade atividades[], int* posicao, int* quantidade_a
 char* devolve_associacao();
 char* devolve_tipo_atividade();
 void mostra_atividade(int posicao);
+void mostra_lista_paginada_atividades(int posicao, t_atividade atividades[]);
 void preenche_atividades(t_atividade atividades[], int posicao);
 void guarda_atividades_ficheiro(t_atividade atividades[], int* quantidade_atividades_por_adicionar, int posicao);
 int obter_ultima_posicao_atividades(void);
@@ -111,6 +113,7 @@ int obter_ultima_posicao_atividades(void);
 //---------- Protótipos das funções para Registar as Incrições e Consultar -----------------//
 void regista_inscricao(t_inscricao inscricoes[], t_atividade atividades[], int* posicao, int posicao_participantes, int posicao_atividade, int* quantidade_inscricoes_por_adicionar);
 void mostra_inscricao(int posicao);
+void mostra_lista_paginada_inscricoes(int posicao, t_inscricao inscricoes[]);
 void preenche_inscricoes(t_inscricao inscricoes[], int posicao);
 void guarda_inscricoes_ficheiro(t_inscricao inscricoes[], int* quantidade_inscricoes_por_adicionar, int posicao);
 int obter_ultima_posicao_inscricoes(void);
@@ -155,13 +158,13 @@ int valida_segunda_data_vetor(t_inscricao inscricoes_aux[], t_inscricao inscrico
 void mostra_valores_por_tipo_atividade(int contador, t_inscricao inscricoes_validadas[], t_atividade atividades[]);
 t_data valida_data_inscricao(t_atividade atividades[], int posicao);
 t_hora valida_hora_inscricao(t_atividade atividades[], int posicao, t_data data_inscricao);
+void valida_indentificadores_participantes_atividades(t_inscricao inscricoes[], int posicao, int posicao_atividade);
 //---------------------------//---------------------------//
 
 int main() {
     setlocale(LC_ALL, "Portuguese");
     char escolha_menu_principal, escolha_registar, escolha_consultar, escolha_estatistica, escolha_saida;
     int posicao_participantes = 0, posicao_atividades = 0, posicao_inscricoes = 0, quantidade_participantes_por_adicionar = 0, quantidade_atividades_por_adicionar = 0, quantidade_inscricoes_por_adicionar = 0;
-    printf("%d", NUMERO_MAXIMO_INSCRICOES);
     t_participante participantes[NUMERO_MAXIMO_ESTUDANTES];
     t_atividade atividades[NUMERO_MAXIMO_ATIVIDADES];
     t_inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES];
@@ -514,9 +517,7 @@ void regista_inscricao(t_inscricao inscricoes[], t_atividade atividades[], int* 
             mostra_participante(posicao_participantes);
             printf("\nIntroduza o ID do participante: ");
             inscricoes[*posicao].identificador_participante = le_numero_intervalo(0, posicao_participantes - 1);
-            mostra_atividade(posicao_atividade);
-            printf("\nIntroduza o ID da atividade: ");
-            inscricoes[*posicao].identificador_atividade = le_numero_intervalo(0, posicao_atividade - 1);
+            valida_indentificadores_participantes_atividades(inscricoes, pos_aux, posicao_atividade);
             inscricoes[*posicao].valor_pago = le_valor_pago(atividades, inscricoes[*posicao].identificador_atividade);
             inscricoes[*posicao].data = valida_data_inscricao(atividades, inscricoes[*posicao].identificador_atividade);
             fflush(stdin);
@@ -528,8 +529,25 @@ void regista_inscricao(t_inscricao inscricoes[], t_atividade atividades[], int* 
     else
         printf("O numero maximo de inscricoes excedido\n");
 }
-//---------------------------//---------------------------//
-
+//Funcao valida se o participante já esá registado na atividade inscrita
+void valida_indentificadores_participantes_atividades(t_inscricao inscricoes[], int posicao, int posicao_atividade) {
+    int posicao_aux = 0, aux = 0;
+    do {
+        aux = 0;
+        mostra_atividade(posicao_atividade);
+        printf("\nIntroduza o ID da atividade: ");
+        inscricoes[posicao].identificador_atividade = le_numero_intervalo(0, posicao_atividade - 1);
+        for (int i = 0;i < posicao;i++) {
+            if ((inscricoes[i].identificador_participante == inscricoes[posicao].identificador_participante)) {
+                posicao_aux = i;
+                if (inscricoes[posicao].identificador_atividade == inscricoes[posicao_aux].identificador_atividade) {
+                    printf("\n-----O participante ja esta registado na atividade inscrita!-------\n");
+                    aux = 1;
+                }
+            }
+        }
+    } while (aux == 1);
+}
 //---------- Função para Guardar os Participantes no ficheiro -----------------//
 void guarda_participantes_ficheiro(t_participante participantes[], int* quantidade_participantes_por_adicionar, int posicao) {
     FILE* fp;
@@ -548,7 +566,6 @@ void guarda_participantes_ficheiro(t_participante participantes[], int* quantida
     }
     fclose(fp);
 }
-//---------------------------//---------------------------//
 
 //---------- Função para Guardar as Atividades no ficheiro -----------------//
 void guarda_atividades_ficheiro(t_atividade atividades[], int* quantidade_atividades_por_adicionar, int posicao) {
@@ -593,72 +610,112 @@ void guarda_inscricoes_ficheiro(t_inscricao inscricoes[], int* quantidade_inscri
 //---------- Função para Mostrar os Particpantes que já foram guardados (Consultar participantes) -----------------//
 void mostra_participante(int posicao) {
     FILE* fp;
-    t_participante participantes_aux[NUMERO_MAXIMO_ESTUDANTES];
-    int paginas, paginas_restantes, pagina_escolhida;
-    char nomes_campos[6][15] = { "ID", "Nome", "Escola", "NIF", "Email", "Telefone" };
+    t_participante participantes[NUMERO_MAXIMO_ESTUDANTES];
+
+
     fp = fopen(FICHEIRO_PARTICIPANTES, "rb");
     printf("\n*Para visualizar os registos adicionados e necessario guardar dados no ficheiro\n");
     if (fp == NULL)
         printf("Nenhum registo de participantes");
     else {
-        //paginas=posicao/10;
-        //paginas_restantes = posicao%10;
-        //printf("\nQuatidade de paginas: %d\nIntoduza a pagina desejada: ",paginas);
-        // scanf("%d", &pagina_escolhida);
-        printf("Quantidade de registos: %d\n%-6s | %-30s | %-7s | %-9s | %-30s | %-9s\n------ | ------------------------------ | ------- | --------- | ------------------------------ | ---------\n", posicao, nomes_campos[0], nomes_campos[1], nomes_campos[2], nomes_campos[3], nomes_campos[4], nomes_campos[5]);
-        for (int i = 0; i < posicao; i++) {
-            fread(&participantes_aux[i], sizeof(t_participante), 1, fp);
 
-            //}
-            //for (int i = 10*(pagina_escolhida-1); i < 10*pagina_escolhida; i++) {
-            printf("%-6d | %-30s | %-7s | %-9s | %-30s | %-9s\n", participantes_aux[i].identificador, participantes_aux[i].nome, participantes_aux[i].escola, participantes_aux[i].nif, participantes_aux[i].email, participantes_aux[i].telefone);
+
+        for (int i = 0; i < posicao; i++) {
+            fread(&participantes[i], sizeof(t_participante), 1, fp);
         }
+        mostra_lista_paginada_participantes(posicao, participantes);
     }
     fclose(fp);
 }
-//---------------------------//---------------------------//
+//funcao mostra lista paginada dos paticipantes
+void mostra_lista_paginada_participantes(int posicao, t_participante participantes[]) {
+    int paginas, paginas_restantes, pagina_escolhida;
+    char nomes_campos[6][15] = { "ID", "Nome", "Escola", "NIF", "Email", "Telefone" };
+    do {
+        paginas = (posicao / 10) + 1;
+        paginas_restantes = posicao % 10;
+        printf("\nQuantidade de registos: %d\nQuatidade de paginas: %d\nINTRODUZA (0) PARA TERMINAR A LISTAGEM \nIntroduza a pagina que desejada visualizar os registos dos participantes: ", posicao, paginas);
+        scanf("%d", &pagina_escolhida);
+        if (pagina_escolhida != 0) {
+            printf("\n%-6s | %-30s | %-7s | %-9s | %-30s | %-9s\n------ | ------------------------------ | ------- | --------- | ------------------------------ | ---------\n", nomes_campos[0], nomes_campos[1], nomes_campos[2], nomes_campos[3], nomes_campos[4], nomes_campos[5]);
+            for (int i = 10 * (pagina_escolhida - 1); i < 10 * pagina_escolhida; i++) {
+                printf("%-6d | %-30s | %-7s | %-9s | %-30s | %-9s\n", participantes[i].identificador, participantes[i].nome, participantes[i].escola, participantes[i].nif, participantes[i].email, participantes[i].telefone);
+            }
+        }
 
+    } while (pagina_escolhida != 0);
+}
 //---------- Função para Mostrar as Atividades que já foram guardadas (Consultar atividades) -----------------//
 void mostra_atividade(int posicao) {
     FILE* fp;
     t_atividade atividades[NUMERO_MAXIMO_ATIVIDADES];
-    char nomes_campos[8][15] = { "ID", "Nome", "Data", "Hora", "Local", "Tipo", "Associacao","Valor" };
 
     fp = fopen(FICHEIRO_ATIVIDADES, "rb");
     printf("\n*Para visualizar os registos adicionados e necessario guardar dados no ficheiro\n");
     if (fp == NULL)
         printf("Nenhum registo de atividades");
     else {
-        printf("Quantidade de registos: %d\n%-4s | %-30s | %-10s | %-5s | %-20s | %-10s | %-10s | %-7s\n---- | ------------------------------ | ---------- | ----- | -------------------- | ---------- | ---------- | -----\n", posicao, nomes_campos[0], nomes_campos[1], nomes_campos[2], nomes_campos[3], nomes_campos[4], nomes_campos[5], nomes_campos[6], nomes_campos[7]);
         for (int i = 0; i < posicao; i++) {
             fread(&atividades[i], sizeof(t_atividade), 1, fp);
-            printf("%-4d | %-30s | %02d-%02d-%02d | %02d:%02d | %-20s | %-10s | %-10s | %-7.2f\n", atividades[i].identificador, atividades[i].nome, atividades[i].data.dia, atividades[i].data.mes, atividades[i].data.ano, atividades[i].hora.horas, atividades[i].hora.minutos, atividades[i].local, atividades[i].tipo, atividades[i].associacao, atividades[i].valor_inscricao);
         }
-
+        mostra_lista_paginada_atividades(posicao, atividades);
     }fclose(fp);
 }
-//---------------------------//---------------------------//
+void mostra_lista_paginada_atividades(int posicao, t_atividade atividades[]) {
+    char nomes_campos[8][15] = { "ID", "Nome", "Data", "Hora", "Local", "Tipo", "Associacao","Valor" };
+    int paginas, paginas_restantes, pagina_escolhida;
+    do {
+        paginas = (posicao / 10) + 1;
+        paginas_restantes = posicao % 10;
+        printf("Quantidade de registos: %d\nQuatidade de paginas: %d\nINTRODUZA (0) PARA TERMINAR A LISTAGEM \nIntroduza a pagina que desejada visualizar os registos das atividades: ", posicao, paginas);
+        scanf("%d", &pagina_escolhida);
+        if (pagina_escolhida != 0) {
+            printf("\n%-4s | %-30s | %-10s | %-5s | %-20s | %-10s | %-10s | %-7s\n---- | ------------------------------ | ---------- | ----- | -------------------- | ---------- | ---------- | -----\n", nomes_campos[0], nomes_campos[1], nomes_campos[2], nomes_campos[3], nomes_campos[4], nomes_campos[5], nomes_campos[6], nomes_campos[7]);
+            for (int i = 10 * (pagina_escolhida - 1); i < 10 * pagina_escolhida; i++) {
+                printf("%-4d | %-30s | %02d-%02d-%04d | %02d:%02d | %-20s | %-10s | %-10s | %-7.2f\n", atividades[i].identificador, atividades[i].nome, atividades[i].data.dia, atividades[i].data.mes, atividades[i].data.ano, atividades[i].hora.horas, atividades[i].hora.minutos, atividades[i].local, atividades[i].tipo, atividades[i].associacao, atividades[i].valor_inscricao);
+            }
+        }
+    } while (pagina_escolhida != 0);
+}
 
 //---------- Função para Mostrar as Inscrições que já foram guardadas (Consultar inscricoes) -----------------//
 void mostra_inscricao(int posicao) {
     FILE* fp;
     t_inscricao inscricoes[NUMERO_MAXIMO_INSCRICOES];
-    char nomes_campos[6][16] = { "ID", "ID Participante", "ID Atividade", "Valor Pago", "Data", "Hora" };
+
     fp = fopen(FICHEIRO_INSCRICOES, "rb");
     printf("\n*Para visualizar os registos adicionados e necessario guardar dados no ficheiro\n");
     if (fp == NULL)
         printf("Nenhum registo de inscricoes");
     else {
-        printf("Quatidade de registos: %d\n%-6s | %-15s | %-12s | %-10s | %-10s | %-8s\n------ | --------------- | ------------ | ---------- | ---------- | --------\n", posicao, nomes_campos[0], nomes_campos[1], nomes_campos[2], nomes_campos[3], nomes_campos[4], nomes_campos[5]);
+
         for (int i = 0; i < posicao; i++) {
             fread(&inscricoes[i], sizeof(t_inscricao), 1, fp);
-            printf("%-6d | %-15d | %-12d | %-10.2f | %02d-%02d-%02d | %02d:%02d:%02d\n", inscricoes[i].identificador, inscricoes[i].identificador_participante, inscricoes[i].identificador_atividade, inscricoes[i].valor_pago, inscricoes[i].data.dia, inscricoes[i].data.mes, inscricoes[i].data.ano, inscricoes[i].hora.horas, inscricoes[i].hora.minutos, inscricoes[i].hora.segundos);
         }
-
+        mostra_lista_paginada_inscricoes(posicao, inscricoes);
     }
     fclose(fp);
 }
-//---------------------------//---------------------------//
+void mostra_lista_paginada_inscricoes(int posicao, t_inscricao inscricoes[]) {
+    char nomes_campos[6][16] = { "ID", "ID Participante", "ID Atividade", "Valor Pago", "Data", "Hora" };
+    int paginas, paginas_restantes, pagina_escolhida;
+
+    do {
+        paginas = (posicao / 10) + 1;
+        paginas_restantes = posicao % 10;
+        printf("Quantidade de registos: %d\nQuatidade de paginas: %d\nINTRODUZA (0) PARA TERMINAR A LISTAGEM \nIntroduza a pagina que desejada visualizar os registos das inscricoes: ", posicao, paginas);
+        scanf("%d", &pagina_escolhida);
+         if (pagina_escolhida != 0) {
+        printf("\n%-6s | %-15s | %-12s | %-10s | %-10s | %-8s\n------ | --------------- | ------------ | ---------- | ---------- | --------\n", nomes_campos[0], nomes_campos[1], nomes_campos[2], nomes_campos[3], nomes_campos[4], nomes_campos[5]);
+
+        for (int i = 10 * (pagina_escolhida - 1); i < 10 * pagina_escolhida; i++) {
+            printf("%-6d | %-15d | %-12d | %-10.2f | %02d-%02d-%04d | %02d:%02d:%02d\n", inscricoes[i].identificador, inscricoes[i].identificador_participante, inscricoes[i].identificador_atividade, inscricoes[i].valor_pago, inscricoes[i].data.dia, inscricoes[i].data.mes, inscricoes[i].data.ano, inscricoes[i].hora.horas, inscricoes[i].hora.minutos, inscricoes[i].hora.segundos);
+        }
+         }
+    } while (pagina_escolhida != 0);
+
+
+}
 
 //---------- Função que coloca os dados dos Participantes no ficheiro de "particpantes.bin" -----------------//
 void preenche_participantes(t_participante participantes[], int posicao) {
