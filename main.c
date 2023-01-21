@@ -1270,7 +1270,7 @@ int valida_diferencas_datas(t_data primeira_data, t_data segunda_data) {
         aux = 0;
     } else if (segunda_data.ano == primeira_data.ano) {
         if (segunda_data.mes < primeira_data.mes)
-            aux = 1;
+            aux = 0;
         else if (segunda_data.mes >= primeira_data.mes) {
             if (segunda_data.dia < primeira_data.dia)
                 aux = 1;
